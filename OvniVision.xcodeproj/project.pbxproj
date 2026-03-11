@@ -6,17 +6,68 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXFileReference section */
-		DAD54B542F5F2ACA00E5B495 /* OvniVision.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OvniVision.app; sourceTree = BUILT_PRODUCTS_DIR; };
-/* End PBXFileReference section */
+/* Begin PBXBuildFile section */
+		DA1EA9C62F60730C007CC456 /* JetBrainsMono-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9B72F60730C007CC456 /* JetBrainsMono-ExtraBoldItalic.ttf */; };
+		DA1EA9C72F60730C007CC456 /* JetBrainsMono-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9B52F60730C007CC456 /* JetBrainsMono-BoldItalic.ttf */; };
+		DA1EA9C82F60730C007CC456 /* JetBrainsMono-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9B62F60730C007CC456 /* JetBrainsMono-ExtraBold.ttf */; };
+		DA1EA9C92F60730C007CC456 /* JetBrainsMono-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9BA2F60730C007CC456 /* JetBrainsMono-Italic.ttf */; };
+		DA1EA9CA2F60730C007CC456 /* JetBrainsMono-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9B92F60730C007CC456 /* JetBrainsMono-ExtraLightItalic.ttf */; };
+		DA1EA9CB2F60730C007CC456 /* JetBrainsMono-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9C12F60730C007CC456 /* JetBrainsMono-SemiBold.ttf */; };
+		DA1EA9CC2F60730C007CC456 /* JetBrainsMono-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9C22F60730C007CC456 /* JetBrainsMono-SemiBoldItalic.ttf */; };
+		DA1EA9CD2F60730C007CC456 /* JetBrainsMono-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9BC2F60730C007CC456 /* JetBrainsMono-Light.ttf */; };
+		DA1EA9CE2F60730C007CC456 /* JetBrainsMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9BE2F60730C007CC456 /* JetBrainsMono-Medium.ttf */; };
+		DA1EA9CF2F60730C007CC456 /* JetBrainsMono-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9C32F60730C007CC456 /* JetBrainsMono-Thin.ttf */; };
+		DA1EA9D02F60730C007CC456 /* JetBrainsMono-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9BD2F60730C007CC456 /* JetBrainsMono-LightItalic.ttf */; };
+		DA1EA9D12F60730C007CC456 /* JetBrainsMono-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9C42F60730C007CC456 /* JetBrainsMono-ThinItalic.ttf */; };
+		DA1EA9D22F60730C007CC456 /* JetBrainsMono-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9BF2F60730C007CC456 /* JetBrainsMono-MediumItalic.ttf */; };
+		DA1EA9D32F60730C007CC456 /* JetBrainsMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9C02F60730C007CC456 /* JetBrainsMono-Regular.ttf */; };
+		DA1EA9D42F60730C007CC456 /* JetBrainsMono-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9B42F60730C007CC456 /* JetBrainsMono-Bold.ttf */; };
+		DA1EA9D52F60730C007CC456 /* JetBrainsMono-Italic[wght].ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9BB2F60730C007CC456 /* JetBrainsMono-Italic[wght].ttf */; };
+		DA1EA9D62F60730C007CC456 /* JetBrainsMono-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9B82F60730C007CC456 /* JetBrainsMono-ExtraLight.ttf */; };
+		DA1EA9DA2F607D48007CC456 /* AppLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1EA9D92F607D48007CC456 /* AppLogo.swift */; };
+		DA34A4342F60621800C06416 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A42D2F60621800C06416 /* HomeScreen.swift */; };
+		DA34A4352F60621800C06416 /* AppNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A42F2F60621800C06416 /* AppNavigation.swift */; };
+		DA34A4362F60621800C06416 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A4312F60621800C06416 /* ContentView.swift */; };
+		DA34A4372F60621800C06416 /* OvniVisionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A4322F60621800C06416 /* OvniVisionApp.swift */; };
+		DA34A4382F60621800C06416 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA34A4302F60621800C06416 /* Assets.xcassets */; };
+		DA34A43A2F60650500C06416 /* CameraScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A4392F60650500C06416 /* CameraScreen.swift */; };
+		DAE0B5922F619E4300D5E24B /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE0B5912F619E4300D5E24B /* CameraPreview.swift */; };
+		DAE0B5952F61A03000D5E24B /* CameraRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE0B5942F61A03000D5E24B /* CameraRepository.swift */; };
+		DAE0B5972F61B29700D5E24B /* CameraPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE0B5962F61B29700D5E24B /* CameraPermissionView.swift */; };
+		DAE0B5992F61B6C400D5E24B /* CameraControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE0B5982F61B6C400D5E24B /* CameraControls.swift */; };
+/* End PBXBuildFile section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		DAD54B562F5F2ACA00E5B495 /* OvniVision */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = OvniVision;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
+/* Begin PBXFileReference section */
+		DA1EA9B42F60730C007CC456 /* JetBrainsMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Bold.ttf"; sourceTree = "<group>"; };
+		DA1EA9B52F60730C007CC456 /* JetBrainsMono-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-BoldItalic.ttf"; sourceTree = "<group>"; };
+		DA1EA9B62F60730C007CC456 /* JetBrainsMono-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-ExtraBold.ttf"; sourceTree = "<group>"; };
+		DA1EA9B72F60730C007CC456 /* JetBrainsMono-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		DA1EA9B82F60730C007CC456 /* JetBrainsMono-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-ExtraLight.ttf"; sourceTree = "<group>"; };
+		DA1EA9B92F60730C007CC456 /* JetBrainsMono-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		DA1EA9BA2F60730C007CC456 /* JetBrainsMono-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Italic.ttf"; sourceTree = "<group>"; };
+		DA1EA9BB2F60730C007CC456 /* JetBrainsMono-Italic[wght].ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Italic[wght].ttf"; sourceTree = "<group>"; };
+		DA1EA9BC2F60730C007CC456 /* JetBrainsMono-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Light.ttf"; sourceTree = "<group>"; };
+		DA1EA9BD2F60730C007CC456 /* JetBrainsMono-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-LightItalic.ttf"; sourceTree = "<group>"; };
+		DA1EA9BE2F60730C007CC456 /* JetBrainsMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Medium.ttf"; sourceTree = "<group>"; };
+		DA1EA9BF2F60730C007CC456 /* JetBrainsMono-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-MediumItalic.ttf"; sourceTree = "<group>"; };
+		DA1EA9C02F60730C007CC456 /* JetBrainsMono-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Regular.ttf"; sourceTree = "<group>"; };
+		DA1EA9C12F60730C007CC456 /* JetBrainsMono-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-SemiBold.ttf"; sourceTree = "<group>"; };
+		DA1EA9C22F60730C007CC456 /* JetBrainsMono-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		DA1EA9C32F60730C007CC456 /* JetBrainsMono-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Thin.ttf"; sourceTree = "<group>"; };
+		DA1EA9C42F60730C007CC456 /* JetBrainsMono-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-ThinItalic.ttf"; sourceTree = "<group>"; };
+		DA1EA9D92F607D48007CC456 /* AppLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogo.swift; sourceTree = "<group>"; };
+		DA34A42D2F60621800C06416 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
+		DA34A42F2F60621800C06416 /* AppNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigation.swift; sourceTree = "<group>"; };
+		DA34A4302F60621800C06416 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DA34A4312F60621800C06416 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		DA34A4322F60621800C06416 /* OvniVisionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvniVisionApp.swift; sourceTree = "<group>"; };
+		DA34A4392F60650500C06416 /* CameraScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraScreen.swift; sourceTree = "<group>"; };
+		DAD54B542F5F2ACA00E5B495 /* OvniVision.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OvniVision.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DAE0B5912F619E4300D5E24B /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
+		DAE0B5942F61A03000D5E24B /* CameraRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRepository.swift; sourceTree = "<group>"; };
+		DAE0B5962F61B29700D5E24B /* CameraPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPermissionView.swift; sourceTree = "<group>"; };
+		DAE0B5982F61B6C400D5E24B /* CameraControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControls.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		DAD54B512F5F2ACA00E5B495 /* Frameworks */ = {
@@ -29,10 +80,85 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DA1EA9C52F60730C007CC456 /* project_fonts */ = {
+			isa = PBXGroup;
+			children = (
+				DA1EA9B42F60730C007CC456 /* JetBrainsMono-Bold.ttf */,
+				DA1EA9B52F60730C007CC456 /* JetBrainsMono-BoldItalic.ttf */,
+				DA1EA9B62F60730C007CC456 /* JetBrainsMono-ExtraBold.ttf */,
+				DA1EA9B72F60730C007CC456 /* JetBrainsMono-ExtraBoldItalic.ttf */,
+				DA1EA9B82F60730C007CC456 /* JetBrainsMono-ExtraLight.ttf */,
+				DA1EA9B92F60730C007CC456 /* JetBrainsMono-ExtraLightItalic.ttf */,
+				DA1EA9BA2F60730C007CC456 /* JetBrainsMono-Italic.ttf */,
+				DA1EA9BB2F60730C007CC456 /* JetBrainsMono-Italic[wght].ttf */,
+				DA1EA9BC2F60730C007CC456 /* JetBrainsMono-Light.ttf */,
+				DA1EA9BD2F60730C007CC456 /* JetBrainsMono-LightItalic.ttf */,
+				DA1EA9BE2F60730C007CC456 /* JetBrainsMono-Medium.ttf */,
+				DA1EA9BF2F60730C007CC456 /* JetBrainsMono-MediumItalic.ttf */,
+				DA1EA9C02F60730C007CC456 /* JetBrainsMono-Regular.ttf */,
+				DA1EA9C12F60730C007CC456 /* JetBrainsMono-SemiBold.ttf */,
+				DA1EA9C22F60730C007CC456 /* JetBrainsMono-SemiBoldItalic.ttf */,
+				DA1EA9C32F60730C007CC456 /* JetBrainsMono-Thin.ttf */,
+				DA1EA9C42F60730C007CC456 /* JetBrainsMono-ThinItalic.ttf */,
+			);
+			path = project_fonts;
+			sourceTree = "<group>";
+		};
+		DA1EA9D82F607D2E007CC456 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				DA1EA9D92F607D48007CC456 /* AppLogo.swift */,
+				DAE0B5912F619E4300D5E24B /* CameraPreview.swift */,
+				DAE0B5962F61B29700D5E24B /* CameraPermissionView.swift */,
+				DAE0B5982F61B6C400D5E24B /* CameraControls.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		DA34A42C2F60621800C06416 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		DA34A42E2F60621800C06416 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				DA34A42D2F60621800C06416 /* HomeScreen.swift */,
+				DA34A4392F60650500C06416 /* CameraScreen.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		DA34A4332F60621800C06416 /* OvniVision */ = {
+			isa = PBXGroup;
+			children = (
+				DA34A4302F60621800C06416 /* Assets.xcassets */,
+				DA34A4322F60621800C06416 /* OvniVisionApp.swift */,
+				DA34A42F2F60621800C06416 /* AppNavigation.swift */,
+				DA34A4312F60621800C06416 /* ContentView.swift */,
+				DA34A43B2F6069F600C06416 /* Shared */,
+				DA34A42C2F60621800C06416 /* Models */,
+				DA34A42E2F60621800C06416 /* Screens */,
+				DAE0B5932F61A00200D5E24B /* Repositorys */,
+				DA1EA9D82F607D2E007CC456 /* Views */,
+			);
+			path = OvniVision;
+			sourceTree = "<group>";
+		};
+		DA34A43B2F6069F600C06416 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				DA1EA9C52F60730C007CC456 /* project_fonts */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		DAD54B4B2F5F2ACA00E5B495 = {
 			isa = PBXGroup;
 			children = (
-				DAD54B562F5F2ACA00E5B495 /* OvniVision */,
+				DA34A4332F60621800C06416 /* OvniVision */,
 				DAD54B552F5F2ACA00E5B495 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +169,14 @@
 				DAD54B542F5F2ACA00E5B495 /* OvniVision.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DAE0B5932F61A00200D5E24B /* Repositorys */ = {
+			isa = PBXGroup;
+			children = (
+				DAE0B5942F61A03000D5E24B /* CameraRepository.swift */,
+			);
+			path = Repositorys;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -59,9 +193,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				DAD54B562F5F2ACA00E5B495 /* OvniVision */,
 			);
 			name = OvniVision;
 			packageProductDependencies = (
@@ -109,6 +240,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA1EA9C62F60730C007CC456 /* JetBrainsMono-ExtraBoldItalic.ttf in Resources */,
+				DA1EA9C72F60730C007CC456 /* JetBrainsMono-BoldItalic.ttf in Resources */,
+				DA1EA9C82F60730C007CC456 /* JetBrainsMono-ExtraBold.ttf in Resources */,
+				DA1EA9C92F60730C007CC456 /* JetBrainsMono-Italic.ttf in Resources */,
+				DA1EA9CA2F60730C007CC456 /* JetBrainsMono-ExtraLightItalic.ttf in Resources */,
+				DA1EA9CB2F60730C007CC456 /* JetBrainsMono-SemiBold.ttf in Resources */,
+				DA1EA9CC2F60730C007CC456 /* JetBrainsMono-SemiBoldItalic.ttf in Resources */,
+				DA1EA9CD2F60730C007CC456 /* JetBrainsMono-Light.ttf in Resources */,
+				DA1EA9CE2F60730C007CC456 /* JetBrainsMono-Medium.ttf in Resources */,
+				DA1EA9CF2F60730C007CC456 /* JetBrainsMono-Thin.ttf in Resources */,
+				DA1EA9D02F60730C007CC456 /* JetBrainsMono-LightItalic.ttf in Resources */,
+				DA1EA9D12F60730C007CC456 /* JetBrainsMono-ThinItalic.ttf in Resources */,
+				DA1EA9D22F60730C007CC456 /* JetBrainsMono-MediumItalic.ttf in Resources */,
+				DA1EA9D32F60730C007CC456 /* JetBrainsMono-Regular.ttf in Resources */,
+				DA1EA9D42F60730C007CC456 /* JetBrainsMono-Bold.ttf in Resources */,
+				DA1EA9D52F60730C007CC456 /* JetBrainsMono-Italic[wght].ttf in Resources */,
+				DA1EA9D62F60730C007CC456 /* JetBrainsMono-ExtraLight.ttf in Resources */,
+				DA34A4382F60621800C06416 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +268,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA34A4342F60621800C06416 /* HomeScreen.swift in Sources */,
+				DAE0B5972F61B29700D5E24B /* CameraPermissionView.swift in Sources */,
+				DA34A4352F60621800C06416 /* AppNavigation.swift in Sources */,
+				DAE0B5952F61A03000D5E24B /* CameraRepository.swift in Sources */,
+				DAE0B5992F61B6C400D5E24B /* CameraControls.swift in Sources */,
+				DA34A4362F60621800C06416 /* ContentView.swift in Sources */,
+				DAE0B5922F619E4300D5E24B /* CameraPreview.swift in Sources */,
+				DA34A43A2F60650500C06416 /* CameraScreen.swift in Sources */,
+				DA34A4372F60621800C06416 /* OvniVisionApp.swift in Sources */,
+				DA1EA9DA2F607D48007CC456 /* AppLogo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,30 +410,39 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZPTL76VYS5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OvniVision/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "CameraRecorder needs camera access to record video.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "CameraRecorder needs microphone access to record audio with video.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.uvcodex.OvniVision;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uvcodex.ovniVision;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -283,30 +451,39 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZPTL76VYS5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OvniVision/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "CameraRecorder needs camera access to record video.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "CameraRecorder needs microphone access to record audio with video.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.uvcodex.OvniVision;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uvcodex.ovniVision;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
