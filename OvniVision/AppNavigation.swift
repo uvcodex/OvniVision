@@ -23,12 +23,13 @@ struct AppNavigation<Content: View>: View {
                         isCameraPresented = true
                     } label: {
                         Image(systemName: "dot.viewfinder")
+                            .symbolRenderingMode(.hierarchical)
                             .resizable()
-                            .frame(width: 23, height: 23)
-                            .frame(width: 55, height: 55)
+                            .frame(width: 25, height: 25)
+                            .frame(width: 60, height: 60)
                     }
-                    .foregroundStyle(.yellow)
-                    .glassEffect(.regular.tint(.yellow.opacity(0.3)).interactive())
+                    .foregroundStyle(.pink)
+                    .glassEffect(.regular.tint(.red.opacity(0.3)).interactive())
                 }
                 .padding(.horizontal, 16)
                 .fullScreenCover(isPresented: $isCameraPresented) {
