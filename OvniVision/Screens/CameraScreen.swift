@@ -9,7 +9,10 @@ import SwiftUI
 
 struct CameraScreen: View {
     @Binding var isPresented: Bool
-    var cameraApi = CameraRepository()
+    @State private var baseZoom: CGFloat = 1.0
+    @GestureState private var isPinching = false
+    
+    var cameraApi = CameraRepository.shared
     
     var body: some View {
         NavigationStack {
@@ -17,10 +20,28 @@ struct CameraScreen: View {
                 Color.black.ignoresSafeArea()
                 
                 if cameraApi.isAuthorized {
-                    // Live preview
                     CameraPreview(session: cameraApi.session)
                         .ignoresSafeArea()
-                    CameraControls(isPresented: $isPresented)
+                        .gesture(
+                            MagnificationGesture()
+                                .updating($isPinching) { _, state, _ in
+                                    state = true
+                                }
+                                .onChanged { value in
+                                    cameraApi.setZoom(baseZoom * value)
+                                }
+                                .onEnded { _ in
+                                    baseZoom = cameraApi.zoomFactor
+                                }
+                        )
+                        .onChange(of: cameraApi.zoomFactor) { _, newValue in
+                            if !isPinching { baseZoom = newValue }
+                        }
+                    
+                    CameraControls(
+                        cameraApi: cameraApi,
+                        isPresented: $isPresented
+                    )
                 } else {
                     CameraPermissionView(isPresented: $isPresented)
                 }
@@ -33,16 +54,13 @@ struct CameraScreen: View {
             }
         }
         .environment(cameraApi)
-        
     }
 }
 
 #Preview {
-    @Previewable let cameraApi = CameraRepository()
     @Previewable @State var isPresented = true
-    
     NavigationStack {
         CameraScreen(isPresented: $isPresented)
     }
-        .environment(cameraApi)
+    .environment(CameraRepository.shared)
 }
