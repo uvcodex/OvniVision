@@ -40,3 +40,4 @@ Carthage/Build/
 # Xcode Playground
 timeline.xctimeline
 playground.xcworkspace
+/generated
