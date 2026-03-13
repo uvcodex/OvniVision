@@ -13,6 +13,7 @@ struct OvniVisionApp: App {
         WindowGroup {
             ContentView()
                 .preferredColorScheme(.dark)
+                .environment(VideosRepository.shared)
         }
     }
 }

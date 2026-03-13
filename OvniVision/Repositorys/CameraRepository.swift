@@ -7,6 +7,7 @@
 
 import Foundation
 import AVFoundation
+import ObjectBox
 
 protocol CameraApi {
     var session: AVCaptureSession { get }
@@ -37,11 +38,14 @@ protocol CameraApi {
 // MARK: - CameraRepository
 
 @Observable
-final class CameraRepository: NSObject, CameraApi {
-    
+final class CameraRepository: NSObject, CameraApi, AVCaptureFileOutputRecordingDelegate {
+    private init(localApi: LocalStoreRepository = .shared) {
+        self.localApi = localApi
+        super.init()
+    }
     
     static let shared = CameraRepository()
-    private override init() { }
+    private let localApi: LocalApi
     
     // MARK: - Session
     let session = AVCaptureSession()
@@ -76,20 +80,27 @@ final class CameraRepository: NSObject, CameraApi {
     // MARK: - Authorization
     func requestPermissions() async {
         let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
-        let audioStatus = AVCaptureDevice.authorizationStatus(for: .audio)
+        let audioPermission = AVAudioApplication.shared.recordPermission
         
         var videoGranted = videoStatus == .authorized
-        var audioGranted = audioStatus == .authorized
+        var audioGranted = audioPermission == .granted
         
         if videoStatus == .notDetermined {
             videoGranted = await AVCaptureDevice.requestAccess(for: .video)
         }
-        if audioStatus == .notDetermined {
-            audioGranted = await AVCaptureDevice.requestAccess(for: .audio)
+        if audioPermission == .undetermined {
+            audioGranted = await withCheckedContinuation { continuation in
+                AVAudioApplication.requestRecordPermission { continuation.resume(returning: $0) }
+            }
         }
         
         await MainActor.run {
             isAuthorized = videoGranted && audioGranted
+            if !videoGranted {
+                errorMessage = "Camera access is required to record video."
+            } else if !audioGranted {
+                errorMessage = "Microphone access is required to record video."
+            }
         }
         
         if isAuthorized {
@@ -230,25 +241,28 @@ final class CameraRepository: NSObject, CameraApi {
     // MARK: - Recording
     func startRecording() {
         guard recordingSate == .idle else { return }
+        
+        let fileName = "\(UUID().uuidString).mov"
+        let url = LocalStoreRepository.videosDirectory.appendingPathComponent(fileName)
+        
+        movieOutput.startRecording(to: url, recordingDelegate: self)
         recordingSate = .recording
-        recordingStartTime = Date()
-        startDurationTimer()
     }
     
     func stopRecording() {
         guard isRecording else { return }
-        stopDuration()
-        recordingStartTime = nil
-        recordingDuration = 0
         recordingSate = .saving
-        Task { @MainActor in
-            try? await Task.sleep(for: .seconds(6))
-            recordingSate = .idle
-        }
+        movieOutput.stopRecording()
+        stopDurationTimer()
     }
     
     func resetRecording() {
         recordingSate = .idle
+    }
+    
+    private func stopDurationTimer() {
+        durationTimer?.invalidate()
+        durationTimer = nil
     }
     
     // MARK: - Duration Timer
@@ -259,9 +273,61 @@ final class CameraRepository: NSObject, CameraApi {
         }
     }
     
-    private func stopDuration() {
-        durationTimer?.invalidate()
-        durationTimer = nil
+    // MARK: Start Capture delegates -
+    func fileOutput(
+        _ output: AVCaptureFileOutput,
+        didStartRecordingTo fileURL: URL,
+        startPTS: CMTime,
+        from connections: [AVCaptureConnection])
+    {
+        Task { @MainActor in
+            recordingStartTime = Date()
+            startDurationTimer()
+        }
+    }
+    
+    // MARK: Stop Capture delegates -
+    func fileOutput(
+        _ output: AVCaptureFileOutput,
+        didFinishRecordingTo outputFileURL: URL,
+        from connections: [AVCaptureConnection],
+        error: (any Error)?)
+    {
+        if let error {
+            Task { @MainActor in
+                errorMessage = error.localizedDescription
+                recordingSate = .idle
+                recordingDuration = 0
+                recordingStartTime = nil
+            }
+            try? FileManager.default.removeItem(at: outputFileURL)
+            return
+        }
+        
+        let duration = recordingDuration
+        let fileSize = (try? outputFileURL
+            .resourceValues(forKeys: [.fileSizeKey]).fileSize)
+            .map { Int64($0) } ?? 0
+        
+        let record = VideoRecord(
+            fileName: outputFileURL.lastPathComponent,
+            duration: duration,
+            fileSize: fileSize
+        )
+        
+        do {
+            try localApi.store.box(for: VideoRecord.self).put(record)
+        } catch {
+            Task { @MainActor in
+                errorMessage = "Failed to save recording: \(error.localizedDescription)"
+            }
+        }
+        
+        Task { @MainActor in
+            recordingSate = .idle
+            recordingDuration = 0
+            recordingStartTime = nil
+        }
     }
     
     
