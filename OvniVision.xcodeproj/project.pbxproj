@@ -32,10 +32,19 @@
 		DA34A4372F60621800C06416 /* OvniVisionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A4322F60621800C06416 /* OvniVisionApp.swift */; };
 		DA34A4382F60621800C06416 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA34A4302F60621800C06416 /* Assets.xcassets */; };
 		DA34A43A2F60650500C06416 /* CameraScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A4392F60650500C06416 /* CameraScreen.swift */; };
+		DA87DD292F645312000C8561 /* EntityInfo-OvniVision.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA87DD272F645312000C8561 /* EntityInfo-OvniVision.generated.swift */; };
 		DAB5923B2F6313B200C10796 /* RecordingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5923A2F6313B200C10796 /* RecordingState.swift */; };
 		DAB5923F2F632BB400C10796 /* CameraRecordingBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5923E2F632BB400C10796 /* CameraRecordingBadge.swift */; };
 		DAB592422F632C6B00C10796 /* App+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB592412F632C6B00C10796 /* App+Extensions.swift */; };
 		DAB592452F63378600C10796 /* CameraSavingPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB592442F63378600C10796 /* CameraSavingPill.swift */; };
+		DAB592482F6344DF00C10796 /* ObjectBox.xcframework in Frameworks */ = {isa = PBXBuildFile; productRef = DAB592472F6344DF00C10796 /* ObjectBox.xcframework */; };
+		DAB5924A2F6354B100C10796 /* LocalStorageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB592492F6354B100C10796 /* LocalStorageRepository.swift */; };
+		DAB5924C2F6354CF00C10796 /* VideoRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5924B2F6354CF00C10796 /* VideoRecord.swift */; };
+		DAB5925A2F637F3A00C10796 /* VideosRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB592592F637F3A00C10796 /* VideosRepository.swift */; };
+		DAB5925C2F63822600C10796 /* MockVideosRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5925B2F63822600C10796 /* MockVideosRepository.swift */; };
+		DAB5925E2F6384A600C10796 /* AppVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5925D2F6384A600C10796 /* AppVideo.swift */; };
+		DAB592602F6399AD00C10796 /* PlaybackScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5925F2F6399AD00C10796 /* PlaybackScreen.swift */; };
+		DAB592622F63A2EF00C10796 /* PlaybackRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB592612F63A2EF00C10796 /* PlaybackRepository.swift */; };
 		DADD06EC2F61DC5F005ED2CB /* CameraControlUnderlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADD06EB2F61DC5F005ED2CB /* CameraControlUnderlay.swift */; };
 		DADD06EE2F61E091005ED2CB /* CameraLensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADD06ED2F61E091005ED2CB /* CameraLensesView.swift */; };
 		DADD06F12F622728005ED2CB /* CameraLens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADD06F02F622728005ED2CB /* CameraLens.swift */; };
@@ -71,10 +80,18 @@
 		DA34A4312F60621800C06416 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		DA34A4322F60621800C06416 /* OvniVisionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvniVisionApp.swift; sourceTree = "<group>"; };
 		DA34A4392F60650500C06416 /* CameraScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraScreen.swift; sourceTree = "<group>"; };
+		DA87DD272F645312000C8561 /* EntityInfo-OvniVision.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EntityInfo-OvniVision.generated.swift"; sourceTree = "<group>"; };
 		DAB5923A2F6313B200C10796 /* RecordingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingState.swift; sourceTree = "<group>"; };
 		DAB5923E2F632BB400C10796 /* CameraRecordingBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRecordingBadge.swift; sourceTree = "<group>"; };
 		DAB592412F632C6B00C10796 /* App+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "App+Extensions.swift"; sourceTree = "<group>"; };
 		DAB592442F63378600C10796 /* CameraSavingPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSavingPill.swift; sourceTree = "<group>"; };
+		DAB592492F6354B100C10796 /* LocalStorageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorageRepository.swift; sourceTree = "<group>"; };
+		DAB5924B2F6354CF00C10796 /* VideoRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoRecord.swift; sourceTree = "<group>"; };
+		DAB592592F637F3A00C10796 /* VideosRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideosRepository.swift; sourceTree = "<group>"; };
+		DAB5925B2F63822600C10796 /* MockVideosRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockVideosRepository.swift; sourceTree = "<group>"; };
+		DAB5925D2F6384A600C10796 /* AppVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVideo.swift; sourceTree = "<group>"; };
+		DAB5925F2F6399AD00C10796 /* PlaybackScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackScreen.swift; sourceTree = "<group>"; };
+		DAB592612F63A2EF00C10796 /* PlaybackRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackRepository.swift; sourceTree = "<group>"; };
 		DAD54B542F5F2ACA00E5B495 /* OvniVision.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OvniVision.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DADD06EB2F61DC5F005ED2CB /* CameraControlUnderlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControlUnderlay.swift; sourceTree = "<group>"; };
 		DADD06ED2F61E091005ED2CB /* CameraLensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraLensesView.swift; sourceTree = "<group>"; };
@@ -90,6 +107,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAB592482F6344DF00C10796 /* ObjectBox.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				DA34A42D2F60621800C06416 /* HomeScreen.swift */,
+				DAB5925F2F6399AD00C10796 /* PlaybackScreen.swift */,
 				DA34A4392F60650500C06416 /* CameraScreen.swift */,
 			);
 			path = Screens;
@@ -157,6 +176,7 @@
 				DAE0B5932F61A00200D5E24B /* Repositorys */,
 				DA34A42E2F60621800C06416 /* Screens */,
 				DA1EA9D82F607D2E007CC456 /* Views */,
+				DA87DD282F645312000C8561 /* generated */,
 			);
 			path = OvniVision;
 			sourceTree = "<group>";
@@ -167,6 +187,14 @@
 				DA1EA9C52F60730C007CC456 /* project_fonts */,
 			);
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		DA87DD282F645312000C8561 /* generated */ = {
+			isa = PBXGroup;
+			children = (
+				DA87DD272F645312000C8561 /* EntityInfo-OvniVision.generated.swift */,
+			);
+			path = generated;
 			sourceTree = "<group>";
 		};
 		DAB592402F632C3700C10796 /* Extensions */ = {
@@ -198,6 +226,8 @@
 			children = (
 				DADD06F02F622728005ED2CB /* CameraLens.swift */,
 				DAB5923A2F6313B200C10796 /* RecordingState.swift */,
+				DAB5924B2F6354CF00C10796 /* VideoRecord.swift */,
+				DAB5925D2F6384A600C10796 /* AppVideo.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -206,7 +236,11 @@
 			isa = PBXGroup;
 			children = (
 				DAE0B5942F61A03000D5E24B /* CameraRepository.swift */,
+				DAB592592F637F3A00C10796 /* VideosRepository.swift */,
+				DAB5925B2F63822600C10796 /* MockVideosRepository.swift */,
+				DAB592492F6354B100C10796 /* LocalStorageRepository.swift */,
 				DA165EC12F62F7B200EA249A /* MockCameraRepository.swift */,
+				DAB592612F63A2EF00C10796 /* PlaybackRepository.swift */,
 			);
 			path = Repositorys;
 			sourceTree = "<group>";
@@ -228,6 +262,7 @@
 			);
 			name = OvniVision;
 			packageProductDependencies = (
+				DAB592472F6344DF00C10796 /* ObjectBox.xcframework */,
 			);
 			productName = OvniVision;
 			productReference = DAD54B542F5F2ACA00E5B495 /* OvniVision.app */;
@@ -257,6 +292,9 @@
 			);
 			mainGroup = DAD54B4B2F5F2ACA00E5B495;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DAB592462F6344DF00C10796 /* XCRemoteSwiftPackageReference "objectbox-swift-spm" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DAD54B552F5F2ACA00E5B495 /* Products */;
 			projectDirPath = "";
@@ -301,23 +339,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA34A4342F60621800C06416 /* HomeScreen.swift in Sources */,
+				DAB5925E2F6384A600C10796 /* AppVideo.swift in Sources */,
 				DADD06F12F622728005ED2CB /* CameraLens.swift in Sources */,
 				DAE0B5972F61B29700D5E24B /* CameraPermissionView.swift in Sources */,
 				DA34A4352F60621800C06416 /* AppNavigation.swift in Sources */,
 				DAE0B5952F61A03000D5E24B /* CameraRepository.swift in Sources */,
 				DADD06EC2F61DC5F005ED2CB /* CameraControlUnderlay.swift in Sources */,
+				DA87DD292F645312000C8561 /* EntityInfo-OvniVision.generated.swift in Sources */,
 				DAE0B5992F61B6C400D5E24B /* CameraControls.swift in Sources */,
 				DA34A4362F60621800C06416 /* ContentView.swift in Sources */,
 				DAB592422F632C6B00C10796 /* App+Extensions.swift in Sources */,
 				DAE0B5922F619E4300D5E24B /* CameraPreview.swift in Sources */,
+				DAB5924A2F6354B100C10796 /* LocalStorageRepository.swift in Sources */,
 				DA34A43A2F60650500C06416 /* CameraScreen.swift in Sources */,
 				DAB592452F63378600C10796 /* CameraSavingPill.swift in Sources */,
 				DAB5923B2F6313B200C10796 /* RecordingState.swift in Sources */,
 				DA165EC22F62F7B200EA249A /* MockCameraRepository.swift in Sources */,
+				DAB592602F6399AD00C10796 /* PlaybackScreen.swift in Sources */,
 				DA34A4372F60621800C06416 /* OvniVisionApp.swift in Sources */,
 				DA1EA9DA2F607D48007CC456 /* AppLogo.swift in Sources */,
+				DAB5925C2F63822600C10796 /* MockVideosRepository.swift in Sources */,
+				DAB5925A2F637F3A00C10796 /* VideosRepository.swift in Sources */,
 				DAB5923F2F632BB400C10796 /* CameraRecordingBadge.swift in Sources */,
+				DAB5924C2F6354CF00C10796 /* VideoRecord.swift in Sources */,
 				DADD06EE2F61E091005ED2CB /* CameraLensesView.swift in Sources */,
+				DAB592622F63A2EF00C10796 /* PlaybackRepository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -459,6 +505,7 @@
 				INFOPLIST_FILE = OvniVision/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "CameraRecorder needs camera access to record video.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "CameraRecorder needs microphone access to record audio with video.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need to use the photolib";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -500,6 +547,7 @@
 				INFOPLIST_FILE = OvniVision/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "CameraRecorder needs camera access to record video.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "CameraRecorder needs microphone access to record audio with video.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need to use the photolib";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -549,6 +597,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DAB592462F6344DF00C10796 /* XCRemoteSwiftPackageReference "objectbox-swift-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/objectbox/objectbox-swift-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DAB592472F6344DF00C10796 /* ObjectBox.xcframework */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DAB592462F6344DF00C10796 /* XCRemoteSwiftPackageReference "objectbox-swift-spm" */;
+			productName = ObjectBox.xcframework;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DAD54B4C2F5F2ACA00E5B495 /* Project object */;
 }

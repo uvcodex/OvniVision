@@ -1,0 +1,52 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:5679226728839099904",
+      "lastPropertyId": "5:2924911464545723648",
+      "name": "VideoRecord",
+      "properties": [
+        {
+          "id": "1:6574678780349142784",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5626316897584678144",
+          "name": "fileName",
+          "type": 9
+        },
+        {
+          "id": "3:3061387435186910208",
+          "name": "duration",
+          "type": 8
+        },
+        {
+          "id": "4:9030195314390735872",
+          "name": "fileSize",
+          "type": 6
+        },
+        {
+          "id": "5:2924911464545723648",
+          "name": "createdAt",
+          "type": 10
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "1:5679226728839099904",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
