@@ -43,8 +43,16 @@ struct PlaybackScreen: View {
     var body: some View {
         NavigationStack {
             PlaybackControls(videosApi: videosApi, playerApi: playerApi, video: video) {
-                AVPlayerControllerRepresented(player: playerApi.player)
-                    .ignoresSafeArea()
+                ZStack {
+                    AVPlayerControllerRepresented(player: playerApi.player)
+                        .ignoresSafeArea()
+                    
+                    PlaybackViewFinder(
+                        filteredImage: playerApi.filteredImage,
+                        activeFilter: playerApi.activeFilter
+                    )
+                }
+                .ignoresSafeArea()
             }
         }
     }

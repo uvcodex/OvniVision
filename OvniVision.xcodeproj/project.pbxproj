@@ -155,11 +155,11 @@
 		DA1EA9D82F607D2E007CC456 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				DA87DD3C2F64C739000C8561 /* CameraViewFinder.swift */,
 				DA1EA9D92F607D48007CC456 /* AppLogo.swift */,
 				DAE0B5912F619E4300D5E24B /* CameraPreview.swift */,
 				DAE0B5962F61B29700D5E24B /* CameraPermissionView.swift */,
 				DAE0B5982F61B6C400D5E24B /* CameraControls.swift */,
+				DA87DD3C2F64C739000C8561 /* CameraViewFinder.swift */,
 				DAB5923E2F632BB400C10796 /* CameraRecordingBadge.swift */,
 				DADD06ED2F61E091005ED2CB /* CameraLensesView.swift */,
 				DADD06EB2F61DC5F005ED2CB /* CameraControlUnderlay.swift */,

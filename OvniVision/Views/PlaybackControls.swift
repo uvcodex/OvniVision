@@ -145,13 +145,13 @@ struct PlaybackControls<Content: View>: View {
                         // Apply filters/cycle filters
                         Button {
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                
+                                playerApi.cycleFilter()
                             }
                         } label: {
                             Image(systemName: "camera.filters")
                                 .resizable()
                                 .frame(width: 20, height: 20)
-                                .foregroundStyle(.white.opacity(0.8))
+                                .foregroundStyle(playerApi.activeFilter != nil ? .orange : .white.opacity(0.8))
                         }
                         .frame(width: 45, height: 45)
                         .glassEffect(.regular, in: Circle())

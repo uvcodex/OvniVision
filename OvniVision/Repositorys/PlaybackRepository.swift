@@ -11,18 +11,23 @@ import Foundation
 
 protocol PlayerApi {
     var player: AVPlayer { get }
-    
+
     var isLoading: Bool { get }
     var isPlaying: Bool { get }
     var currentTime: Double { get }
     var duration: Double { get }
-    
+
+    // Filter states
+    var filteredImage: CGImage? { get }
+    var activeFilter: VideoFilter? { get }
+
     func load(_ video: AppVideo)
     func pause()
     func stop()
     func togglePlayPause()
     func seek(by seconds: Double)
     func seekTo(_ seconds: Double)
+    func cycleFilter()
 }
 
 @Observable
@@ -30,18 +35,31 @@ final class PlayerRepository: PlayerApi {
     init(file: URL) {
         self.player = AVPlayer(url: file)
     }
-    
+
     var player: AVPlayer
     var isPlaying = false
     var duration: Double = 0
     var currentTime: Double = 0
     var isLoading: Bool = false
-    
+
+    // Filter states
+    var filteredImage: CGImage? = nil
+    var activeFilter: VideoFilter? = nil
+
     private var timeObserver: Any?
+    private var videoOutput: AVPlayerItemVideoOutput?
+    private var displayTimer: Timer?
+    private let ciContext = CIContext()
+    private let processingQueue = DispatchQueue(label: "com.ovni-vision.playback-filter")
 
     func load(_ video: AppVideo) {
         isLoading = true
         let item = AVPlayerItem(url: video.fileURL)
+        let output = AVPlayerItemVideoOutput(pixelBufferAttributes: [
+            kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)
+        ])
+        item.add(output)
+        videoOutput = output
         player = AVPlayer(playerItem: item)
         if let observer = timeObserver { player.removeTimeObserver(observer) }
         let interval = CMTimeMakeWithSeconds(0.1, preferredTimescale: 600)
@@ -52,6 +70,46 @@ final class PlayerRepository: PlayerApi {
             }
         }
         isLoading = false
+    }
+
+    func cycleFilter() {
+        let filters: [VideoFilter] = [.noir, .colorInvert, .thermal]
+        if let current = activeFilter, let idx = filters.firstIndex(of: current) {
+            let next = idx + 1
+            activeFilter = next < filters.count ? filters[next] : nil
+        } else {
+            activeFilter = filters.first
+        }
+        if activeFilter == nil {
+            filteredImage = nil
+            stopDisplayTimer()
+        } else {
+            startDisplayTimer()
+            // Render immediately so the filter is visible even when paused
+            processingQueue.async { [weak self] in self?.processCurrentFrame() }
+        }
+    }
+
+    private func startDisplayTimer() {
+        guard displayTimer == nil else { return }
+        displayTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in
+            self?.processingQueue.async { self?.processCurrentFrame() }
+        }
+    }
+
+    private func stopDisplayTimer() {
+        displayTimer?.invalidate()
+        displayTimer = nil
+    }
+
+    private func processCurrentFrame() {
+        guard let output = videoOutput, let filter = activeFilter else { return }
+        let time = player.currentTime()
+        guard let pixelBuffer = output.copyPixelBuffer(forItemTime: time, itemTimeForDisplay: nil) else { return }
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        guard let filtered = filter.apply(to: ciImage),
+              let cgImage = ciContext.createCGImage(filtered, from: filtered.extent) else { return }
+        Task { @MainActor in self.filteredImage = cgImage }
     }
 
     func seekTo(_ seconds: Double) {
@@ -85,5 +143,8 @@ final class PlayerRepository: PlayerApi {
         player.pause()
         player.seek(to: .zero)
         isPlaying = false
+        stopDisplayTimer()
+        activeFilter = nil
+        filteredImage = nil
     }
 }
