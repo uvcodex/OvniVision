@@ -6,36 +6,59 @@
 //
 
 import AVKit
+import CoreImage
 import Foundation
 
-@Observable
-final class PlaybackRepository {
-    private var timeObserver: Any?
+protocol PlayerApi {
+    var player: AVPlayer { get }
+    
+    var isLoading: Bool { get }
+    var isPlaying: Bool { get }
+    var currentTime: Double { get }
+    var duration: Double { get }
+    
+    func load(_ video: AppVideo)
+    func pause()
+    func stop()
+    func togglePlayPause()
+    func seek(by seconds: Double)
+    func seekTo(_ seconds: Double)
+}
 
+@Observable
+final class PlayerRepository: PlayerApi {
     init(file: URL) {
         self.player = AVPlayer(url: file)
-//        Task {
-//            let asset = AVURLAsset(url: file)
-//            let tracks = try? await asset.loadTracks(withMediaType: .video)
-//            let fps = try? await tracks?.first?.load(.nominalFrameRate)
-//            let resolvedFps = Double(fps ?? 30)
-//            let interval = CMTime(value: 1, timescale: CMTimeScale(resolvedFps))
-//            timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { time in
-//                let frame = Int(time.seconds * resolvedFps)
-//                print("Frame: \(frame)")
-//            }
-//        }
     }
-
+    
     var player: AVPlayer
+    var isPlaying = false
+    var duration: Double = 0
+    var currentTime: Double = 0
     var isLoading: Bool = false
-    private var isPlaying = false
+    
+    private var timeObserver: Any?
 
     func load(_ video: AppVideo) {
         isLoading = true
-        player = AVPlayer(url: video.fileURL)
+        let item = AVPlayerItem(url: video.fileURL)
+        player = AVPlayer(playerItem: item)
+        if let observer = timeObserver { player.removeTimeObserver(observer) }
+        let interval = CMTimeMakeWithSeconds(0.1, preferredTimescale: 600)
+        timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
+            self?.currentTime = time.seconds
+            if let d = self?.player.currentItem?.duration.seconds, d.isFinite {
+                self?.duration = d
+            }
+        }
         isLoading = false
     }
+
+    func seekTo(_ seconds: Double) {
+        let target = CMTimeMakeWithSeconds(seconds, preferredTimescale: 600)
+        player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero)
+    }
+
 
     func play() {
         player.play()
@@ -45,6 +68,17 @@ final class PlaybackRepository {
     func pause() {
         player.pause()
         isPlaying = false
+    }
+
+    func togglePlayPause() {
+        isPlaying ? pause() : play()
+    }
+
+    func seek(by seconds: Double) {
+        let current = player.currentTime()
+        let offset = CMTimeMakeWithSeconds(seconds, preferredTimescale: 600)
+        let target = CMTimeAdd(current, offset)
+        player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero)
     }
 
     func stop() {

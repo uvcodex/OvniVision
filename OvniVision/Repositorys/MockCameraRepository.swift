@@ -8,16 +8,18 @@
 
 import Foundation
 import AVFoundation
+import Vision
 
 // MARK: - CameraRepository
 
 @Observable
 final class MockCameraRepository: NSObject, CameraApi {
-    static let shared = MockCameraRepository()
     
-    private override init() {
-        
-    }
+    
+    static let shared = MockCameraRepository()
+//    private override init() {
+//        
+//    }
     
     // MARK: - Session
     let session = AVCaptureSession()
@@ -43,6 +45,27 @@ final class MockCameraRepository: NSObject, CameraApi {
     }
     var isSaving: Bool {
         recordingSate == .saving
+    }
+    
+    // MARK: - Filters state
+//    var processedImages: [CGImage?] = [nil, nil, nil]
+    var processedImages: CGImage? = nil
+    var activeFilter: VideoFilter? = nil
+    var viewFinderSize: CGFloat = 150
+
+    // MARK: - Detection stubs
+    var isTracking: Bool = false
+//    var detections: [OvniDetection] = []
+    func toggleTracking() { isTracking.toggle() }
+
+    func cycleFilter() {
+        let filters: [VideoFilter] = [.noir, .colorInvert, .thermal]
+        if let current = activeFilter, let idx = filters.firstIndex(of: current) {
+            let next = idx + 1
+            activeFilter = next < filters.count ? filters[next] : nil
+        } else {
+            activeFilter = filters.first
+        }
     }
     
     func initialize() {
