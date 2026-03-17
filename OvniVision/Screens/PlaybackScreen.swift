@@ -7,75 +7,45 @@
 
 import AVKit
 import SwiftUI
+import UIKit
+
+private struct AVPlayerControllerRepresented: UIViewControllerRepresentable {
+    let player: AVPlayer
+    
+    func makeUIViewController(context: Context) -> AVPlayerViewController {
+        let vc = AVPlayerViewController()
+        vc.player = player
+        vc.showsPlaybackControls = false
+        vc.videoGravity = .resizeAspectFill
+        return vc
+    }
+    
+    func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
+        uiViewController.player = player
+    }
+}
 
 struct PlaybackScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(VideosRepository.self) var videosApi
-    @State var playerApi: PlaybackRepository
-    @State private var showDeleteAlert = false
+    @State var playerApi: PlayerApi
+//        @State private var trackingApi = TrackObjectRepository() // VNDetectedObjectObservation
+    
+    
     let video: AppVideo
     
     init(video: AppVideo) {
         self.video = video
-        let playerApi = PlaybackRepository(file: video.fileURL)
+        let playerApi = PlayerRepository(file: video.fileURL)
         self._playerApi = State(initialValue: playerApi)
     }
     
     var body: some View {
         NavigationStack {
-            VStack {
-                if playerApi.isLoading {
-                    ProgressView()
-                } else {
-                    VideoPlayer(player: playerApi.player)
-                }
-                
+            PlaybackControls(videosApi: videosApi, playerApi: playerApi, video: video) {
+                AVPlayerControllerRepresented(player: playerApi.player)
+                    .ignoresSafeArea()
             }
-            .toolbar {
-                // MARK: Dismiss button -
-                ToolbarItem(placement:.cancellationAction) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                            .resizable()
-                            .frame(width: 16, height: 16)
-                            .foregroundStyle(.red)
-                    }
-                    .frame(width: 35, height: 35)
-                }
-                
-                // MARK: Delete button -
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        playerApi.pause()
-                        showDeleteAlert = true
-                    } label: {
-                        Image(systemName: "trash")
-                            .resizable()
-                            .frame(width: 16, height: 16)
-                            .foregroundStyle(.red)
-                    }
-                    .frame(width: 35, height: 35)
-                }
-            }
-            .alert("Delete Video", isPresented: $showDeleteAlert) {
-                Button("Delete", role: .destructive) {
-                    videosApi.deleteVideo(video)
-                    dismiss()
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("This action cannot be undone.")
-            }
-            .onAppear {
-                playerApi.load(video)
-                playerApi.play()
-            }
-            .onDisappear {
-                playerApi.stop()
-            }
-            
         }
     }
     

@@ -7,7 +7,9 @@
 
 import Foundation
 import AVFoundation
-import ObjectBox
+import ObjectBox // Used for persisting VideoRecord to the local store
+import CoreImage
+import Vision
 
 protocol CameraApi {
     var session: AVCaptureSession { get }
@@ -23,6 +25,14 @@ protocol CameraApi {
     var isRecording: Bool { get }
     var isSaving: Bool { get }
     
+    // Filter states
+//    var processedImages: [CGImage?] { get }
+    var processedImages: CGImage? { get }
+    var activeFilter: VideoFilter? { get }
+
+    // Detection
+    var viewFinderSize: CGFloat { get set }
+    
     func requestPermissions() async
     func switchLens(to: CameraLens)
     func setZoom(_ factor: CGFloat)
@@ -32,13 +42,16 @@ protocol CameraApi {
     func startRecording()
     func stopRecording()
     func resetRecording()
-    
+
+    // Filters
+    func cycleFilter()
+
 }
 
 // MARK: - CameraRepository
 
 @Observable
-final class CameraRepository: NSObject, CameraApi, AVCaptureFileOutputRecordingDelegate {
+final class CameraRepository: NSObject, CameraApi {
     private init(localApi: LocalStoreRepository = .shared) {
         self.localApi = localApi
         super.init()
@@ -50,12 +63,14 @@ final class CameraRepository: NSObject, CameraApi, AVCaptureFileOutputRecordingD
     // MARK: - Session
     let session = AVCaptureSession()
     private let movieOutput = AVCaptureMovieFileOutput()
+    private let videoDataOutput = AVCaptureVideoDataOutput()
     private var captureDevice: AVCaptureDevice?
     private var videoInput: AVCaptureDeviceInput?
     private var audioInput: AVCaptureDeviceInput?
-    @ObservationIgnored private let sessionQueue = DispatchQueue(
-        label: "com.ovni-vision.camera-session"
-    )
+    
+    private let ciContext = CIContext()
+    private let sessionQueue = DispatchQueue(label: "com.ovni-vision.camera-session")
+    private let videoSessionQueue = DispatchQueue(label: "com.ovni-vision.camera-session")
     
     // MARK: - State
     var isAuthorized = false
@@ -69,6 +84,7 @@ final class CameraRepository: NSObject, CameraApi, AVCaptureFileOutputRecordingD
     private var recordingStartTime: Date?
     var recordingSate: RecordingState = .idle
     var recordingDuration: TimeInterval = 0
+    var viewFinderSize: CGFloat = 150.0
     var isRecording: Bool {
         recordingSate == .recording
     }
@@ -76,75 +92,105 @@ final class CameraRepository: NSObject, CameraApi, AVCaptureFileOutputRecordingD
         recordingSate == .saving
     }
     
+    // MARK: - Image filter state
+    var processedImages: CGImage? = nil
+    var activeFilter: VideoFilter? = nil
+
+    // MARK: - Filter cycling
+    func cycleFilter() {
+        let filters: [VideoFilter] = [.noir, .colorInvert, .thermal]
+        if let current = activeFilter, let idx = filters.firstIndex(of: current) {
+            let next = idx + 1
+            activeFilter = next < filters.count ? filters[next] : nil
+        } else {
+            activeFilter = filters.first
+        }
+        if activeFilter == nil {
+            processedImages = nil
+        }
+    }
+    
     
     // MARK: - Authorization
-    func requestPermissions() async {
+    func requestPermissions() {
         let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
         let audioPermission = AVAudioApplication.shared.recordPermission
         
         var videoGranted = videoStatus == .authorized
         var audioGranted = audioPermission == .granted
         
-        if videoStatus == .notDetermined {
-            videoGranted = await AVCaptureDevice.requestAccess(for: .video)
-        }
-        if audioPermission == .undetermined {
-            audioGranted = await withCheckedContinuation { continuation in
-                AVAudioApplication.requestRecordPermission { continuation.resume(returning: $0) }
+        Task {
+            if videoStatus == .notDetermined {
+                videoGranted = await AVCaptureDevice.requestAccess(for: .video)
             }
-        }
-        
-        await MainActor.run {
-            isAuthorized = videoGranted && audioGranted
-            if !videoGranted {
-                errorMessage = "Camera access is required to record video."
-            } else if !audioGranted {
-                errorMessage = "Microphone access is required to record video."
+            if audioPermission == .undetermined {
+                audioGranted = await withCheckedContinuation { continuation in
+                    AVAudioApplication.requestRecordPermission { continuation.resume(returning: $0) }
+                }
             }
-        }
-        
-        if isAuthorized {
-            await setupSession()
-        }
-    }
-    
-    // MARK: - Session setup
-    private func setupSession() async {
-        sessionQueue.async { [weak self] in
-            guard let self else { return }
-            self.configureSession()
+            
+            await MainActor.run {
+                isAuthorized = videoGranted && audioGranted
+                if !videoGranted {
+                    errorMessage = "Camera access is required to record video."
+                } else if !audioGranted {
+                    errorMessage = "Microphone access is required to record video."
+                }
+                
+                if isAuthorized {
+                    sessionQueue.async { [weak self] in
+                        guard let self else { return }
+                        self.configureSession()
+                    }
+                }
+            }
         }
     }
     
     private func configureSession() {
         guard let device = bestVirtualDevice() else { return }
-        captureDevice = device
+        self.captureDevice = device
         
         let lenses = buildLenses(for: device)
-        let defaultLens = lenses.first(where: { $0.zoomFactor == 1.0 }) ?? lenses.first
+        Task { @MainActor in
+            self.availableLenses = lenses
+            self.activeLens = lenses.first
+            if let zoom = lenses.first?.zoomFactor {
+                self.zoomFactor = zoom
+            }
+        }
         
         session.beginConfiguration()
         session.sessionPreset = .hd1920x1080
         
         do {
-            let input = try AVCaptureDeviceInput(device: device)
-            if session.canAddInput(input) {
-                session.addInput(input)
-                videoInput = input
+            let videoInput = try AVCaptureDeviceInput(device: device)
+            if session.canAddInput(videoInput) {
+                session.addInput(videoInput)
+                Task {  @MainActor in
+                    self.videoInput = videoInput
+                }
             }
         } catch {
-            Task { @MainActor in self.errorMessage = error.localizedDescription }
+            Task { @MainActor in
+                self.errorMessage = error.localizedDescription
+            }
+            return
         }
         
-        if let mic = AVCaptureDevice.default(for: .audio) {
-            do {
-                let input = try AVCaptureDeviceInput(device: mic)
-                if session.canAddInput(input) {
-                    session.addInput(input)
-                    audioInput = input
+        do {
+            if let audio = AVCaptureDevice.default(for: .audio) {
+                let audioInput = try AVCaptureDeviceInput(device: audio)
+                if session.canAddInput(audioInput) {
+                    session.addInput(audioInput)
+                    Task { @MainActor in
+                        self.audioInput = audioInput
+                    }
                 }
-            } catch {
-                Task { @MainActor in self.errorMessage = error.localizedDescription }
+            }
+        } catch {
+            Task { @MainActor in
+                self.errorMessage = error.localizedDescription
             }
         }
         
@@ -156,14 +202,18 @@ final class CameraRepository: NSObject, CameraApi, AVCaptureFileOutputRecordingD
             }
         }
         
+        if session.canAddOutput(videoDataOutput) {
+            session.addOutput(videoDataOutput)
+            
+            videoDataOutput.alwaysDiscardsLateVideoFrames = true
+            videoDataOutput.videoSettings = [
+                kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_420YpCbCr8BiPlanarFullRange)
+            ]
+            videoDataOutput.setSampleBufferDelegate(self, queue: videoSessionQueue)
+        }
+        
         session.commitConfiguration()
         session.startRunning()
-        
-        Task { @MainActor in
-            self.availableLenses = lenses
-            self.activeLens = defaultLens
-            if let z = defaultLens?.zoomFactor { self.zoomFactor = z }
-        }
     }
     
     // MARK: - Virtual device selection
@@ -225,7 +275,9 @@ final class CameraRepository: NSObject, CameraApi, AVCaptureFileOutputRecordingD
             try device.lockForConfiguration()
             device.videoZoomFactor = clamped
             device.unlockForConfiguration()
-        } catch { return }
+        } catch {
+            return
+        }
         
         zoomFactor = clamped
         activeLens = availableLenses.last(where: { $0.zoomFactor <= zoomFactor }) ?? availableLenses.first
@@ -233,8 +285,21 @@ final class CameraRepository: NSObject, CameraApi, AVCaptureFileOutputRecordingD
     
     // MARK: - Cleanup
     func stopSession() {
+//        detectionRepo.stop()
         sessionQueue.async { [weak self] in
-            self?.session.stopRunning()
+            guard let self else { return }
+            self.session.stopRunning()
+        }
+
+        let defaultZoom = availableLenses.first(where: { $0.zoomFactor == 1.0 })
+        let zoom = defaultZoom?.zoomFactor ?? availableLenses.first?.zoomFactor ?? 1.0
+        
+        Task { @MainActor in
+            setZoom(zoom)
+            activeLens = availableLenses.first(where: { $0.zoomFactor == zoom })
+            viewFinderSize = 150.0
+            activeFilter = nil
+            processedImages = nil
         }
     }
     
@@ -273,13 +338,11 @@ final class CameraRepository: NSObject, CameraApi, AVCaptureFileOutputRecordingD
         }
     }
     
+}
+
+extension CameraRepository: AVCaptureFileOutputRecordingDelegate {
     // MARK: Start Capture delegates -
-    func fileOutput(
-        _ output: AVCaptureFileOutput,
-        didStartRecordingTo fileURL: URL,
-        startPTS: CMTime,
-        from connections: [AVCaptureConnection])
-    {
+    func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, startPTS: CMTime, from connections: [AVCaptureConnection]) {
         Task { @MainActor in
             recordingStartTime = Date()
             startDurationTimer()
@@ -287,12 +350,7 @@ final class CameraRepository: NSObject, CameraApi, AVCaptureFileOutputRecordingD
     }
     
     // MARK: Stop Capture delegates -
-    func fileOutput(
-        _ output: AVCaptureFileOutput,
-        didFinishRecordingTo outputFileURL: URL,
-        from connections: [AVCaptureConnection],
-        error: (any Error)?)
-    {
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: (any Error)?) {
         if let error {
             Task { @MainActor in
                 errorMessage = error.localizedDescription
@@ -329,6 +387,22 @@ final class CameraRepository: NSObject, CameraApi, AVCaptureFileOutputRecordingD
             recordingStartTime = nil
         }
     }
-    
-    
 }
+
+
+extension CameraRepository: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        
+        guard let filter = activeFilter else { return }
+
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        if let filtered = filter.apply(to: ciImage),
+           let cgImage = ciContext.createCGImage(filtered, from: filtered.extent) {
+            Task { @MainActor in
+                self.processedImages = cgImage
+            }
+        }
+    }
+}
+

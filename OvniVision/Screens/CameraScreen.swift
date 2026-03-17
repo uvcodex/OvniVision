@@ -12,13 +12,14 @@ struct CameraScreen: View {
     @State private var baseZoom: CGFloat = 1.0
     @GestureState private var isPinching = false
     
-    var cameraApi = CameraRepository.shared
+    @State var cameraApi = CameraRepository.shared
+    @State var compassApi = CompassRepository()
+    
     
     var body: some View {
         NavigationStack {
             ZStack {
                 Color.black.ignoresSafeArea()
-                
                 if cameraApi.isAuthorized {
                     CameraPreview(session: cameraApi.session)
                         .ignoresSafeArea()
@@ -37,23 +38,21 @@ struct CameraScreen: View {
                         .onChange(of: cameraApi.zoomFactor) { _, newValue in
                             if !isPinching { baseZoom = newValue }
                         }
+                    CameraControls()
                     
-                    CameraControls(
-                        cameraApi: cameraApi,
-                        isPresented: $isPresented
-                    )
                 } else {
                     CameraPermissionView(isPresented: $isPresented)
                 }
             }
             .task {
-                await cameraApi.requestPermissions()
+                cameraApi.requestPermissions()
             }
             .onDisappear {
                 cameraApi.stopSession()
             }
         }
         .environment(cameraApi)
+        .environment(compassApi)
     }
 }
 
@@ -63,4 +62,5 @@ struct CameraScreen: View {
         CameraScreen(isPresented: $isPresented)
     }
     .environment(CameraRepository.shared)
+    .environment(CompassRepository())
 }

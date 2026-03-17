@@ -26,13 +26,21 @@
 		DA1EA9D52F60730C007CC456 /* JetBrainsMono-Italic[wght].ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9BB2F60730C007CC456 /* JetBrainsMono-Italic[wght].ttf */; };
 		DA1EA9D62F60730C007CC456 /* JetBrainsMono-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DA1EA9B82F60730C007CC456 /* JetBrainsMono-ExtraLight.ttf */; };
 		DA1EA9DA2F607D48007CC456 /* AppLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1EA9D92F607D48007CC456 /* AppLogo.swift */; };
+		DA33FE6A2F68DC3900DEA94B /* TrackObjectRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA33FE692F68DC3900DEA94B /* TrackObjectRepository.swift */; };
+		DA33FE6C2F698BFF00DEA94B /* PlaybackControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA33FE6B2F698BFF00DEA94B /* PlaybackControls.swift */; };
+		DA33FE6E2F69A96500DEA94B /* VideoFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA33FE6D2F69A96500DEA94B /* VideoFilter.swift */; };
 		DA34A4342F60621800C06416 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A42D2F60621800C06416 /* HomeScreen.swift */; };
 		DA34A4352F60621800C06416 /* AppNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A42F2F60621800C06416 /* AppNavigation.swift */; };
 		DA34A4362F60621800C06416 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A4312F60621800C06416 /* ContentView.swift */; };
 		DA34A4372F60621800C06416 /* OvniVisionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A4322F60621800C06416 /* OvniVisionApp.swift */; };
 		DA34A4382F60621800C06416 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA34A4302F60621800C06416 /* Assets.xcassets */; };
 		DA34A43A2F60650500C06416 /* CameraScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA34A4392F60650500C06416 /* CameraScreen.swift */; };
+		DA3E740C2F68565B00F36337 /* CameraCompassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E740B2F68565B00F36337 /* CameraCompassView.swift */; };
 		DA87DD292F645312000C8561 /* EntityInfo-OvniVision.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA87DD272F645312000C8561 /* EntityInfo-OvniVision.generated.swift */; };
+		DA87DD2D2F6463EB000C8561 /* OvniAi.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = DA87DD2C2F6463EB000C8561 /* OvniAi.mlmodel */; };
+		DA87DD3D2F64C739000C8561 /* CameraViewFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA87DD3C2F64C739000C8561 /* CameraViewFinder.swift */; };
+		DA9D169A2F68667D0017FBE7 /* CompassRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA9D16992F68667D0017FBE7 /* CompassRepository.swift */; };
+		DA9D169C2F68AA730017FBE7 /* PlaybackViewFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA9D169B2F68AA730017FBE7 /* PlaybackViewFinder.swift */; };
 		DAB5923B2F6313B200C10796 /* RecordingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5923A2F6313B200C10796 /* RecordingState.swift */; };
 		DAB5923F2F632BB400C10796 /* CameraRecordingBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5923E2F632BB400C10796 /* CameraRecordingBadge.swift */; };
 		DAB592422F632C6B00C10796 /* App+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB592412F632C6B00C10796 /* App+Extensions.swift */; };
@@ -41,7 +49,6 @@
 		DAB5924A2F6354B100C10796 /* LocalStorageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB592492F6354B100C10796 /* LocalStorageRepository.swift */; };
 		DAB5924C2F6354CF00C10796 /* VideoRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5924B2F6354CF00C10796 /* VideoRecord.swift */; };
 		DAB5925A2F637F3A00C10796 /* VideosRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB592592F637F3A00C10796 /* VideosRepository.swift */; };
-		DAB5925C2F63822600C10796 /* MockVideosRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5925B2F63822600C10796 /* MockVideosRepository.swift */; };
 		DAB5925E2F6384A600C10796 /* AppVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5925D2F6384A600C10796 /* AppVideo.swift */; };
 		DAB592602F6399AD00C10796 /* PlaybackScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5925F2F6399AD00C10796 /* PlaybackScreen.swift */; };
 		DAB592622F63A2EF00C10796 /* PlaybackRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB592612F63A2EF00C10796 /* PlaybackRepository.swift */; };
@@ -74,13 +81,21 @@
 		DA1EA9C32F60730C007CC456 /* JetBrainsMono-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Thin.ttf"; sourceTree = "<group>"; };
 		DA1EA9C42F60730C007CC456 /* JetBrainsMono-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-ThinItalic.ttf"; sourceTree = "<group>"; };
 		DA1EA9D92F607D48007CC456 /* AppLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogo.swift; sourceTree = "<group>"; };
+		DA33FE692F68DC3900DEA94B /* TrackObjectRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackObjectRepository.swift; sourceTree = "<group>"; };
+		DA33FE6B2F698BFF00DEA94B /* PlaybackControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackControls.swift; sourceTree = "<group>"; };
+		DA33FE6D2F69A96500DEA94B /* VideoFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoFilter.swift; sourceTree = "<group>"; };
 		DA34A42D2F60621800C06416 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		DA34A42F2F60621800C06416 /* AppNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNavigation.swift; sourceTree = "<group>"; };
 		DA34A4302F60621800C06416 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DA34A4312F60621800C06416 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		DA34A4322F60621800C06416 /* OvniVisionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvniVisionApp.swift; sourceTree = "<group>"; };
 		DA34A4392F60650500C06416 /* CameraScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraScreen.swift; sourceTree = "<group>"; };
+		DA3E740B2F68565B00F36337 /* CameraCompassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCompassView.swift; sourceTree = "<group>"; };
 		DA87DD272F645312000C8561 /* EntityInfo-OvniVision.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EntityInfo-OvniVision.generated.swift"; sourceTree = "<group>"; };
+		DA87DD2C2F6463EB000C8561 /* OvniAi.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = OvniAi.mlmodel; sourceTree = "<group>"; };
+		DA87DD3C2F64C739000C8561 /* CameraViewFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewFinder.swift; sourceTree = "<group>"; };
+		DA9D16992F68667D0017FBE7 /* CompassRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassRepository.swift; sourceTree = "<group>"; };
+		DA9D169B2F68AA730017FBE7 /* PlaybackViewFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewFinder.swift; sourceTree = "<group>"; };
 		DAB5923A2F6313B200C10796 /* RecordingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingState.swift; sourceTree = "<group>"; };
 		DAB5923E2F632BB400C10796 /* CameraRecordingBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRecordingBadge.swift; sourceTree = "<group>"; };
 		DAB592412F632C6B00C10796 /* App+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "App+Extensions.swift"; sourceTree = "<group>"; };
@@ -88,7 +103,6 @@
 		DAB592492F6354B100C10796 /* LocalStorageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorageRepository.swift; sourceTree = "<group>"; };
 		DAB5924B2F6354CF00C10796 /* VideoRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoRecord.swift; sourceTree = "<group>"; };
 		DAB592592F637F3A00C10796 /* VideosRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideosRepository.swift; sourceTree = "<group>"; };
-		DAB5925B2F63822600C10796 /* MockVideosRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockVideosRepository.swift; sourceTree = "<group>"; };
 		DAB5925D2F6384A600C10796 /* AppVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVideo.swift; sourceTree = "<group>"; };
 		DAB5925F2F6399AD00C10796 /* PlaybackScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackScreen.swift; sourceTree = "<group>"; };
 		DAB592612F63A2EF00C10796 /* PlaybackRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackRepository.swift; sourceTree = "<group>"; };
@@ -141,6 +155,7 @@
 		DA1EA9D82F607D2E007CC456 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				DA87DD3C2F64C739000C8561 /* CameraViewFinder.swift */,
 				DA1EA9D92F607D48007CC456 /* AppLogo.swift */,
 				DAE0B5912F619E4300D5E24B /* CameraPreview.swift */,
 				DAE0B5962F61B29700D5E24B /* CameraPermissionView.swift */,
@@ -149,6 +164,9 @@
 				DADD06ED2F61E091005ED2CB /* CameraLensesView.swift */,
 				DADD06EB2F61DC5F005ED2CB /* CameraControlUnderlay.swift */,
 				DAB592442F63378600C10796 /* CameraSavingPill.swift */,
+				DA3E740B2F68565B00F36337 /* CameraCompassView.swift */,
+				DA9D169B2F68AA730017FBE7 /* PlaybackViewFinder.swift */,
+				DA33FE6B2F698BFF00DEA94B /* PlaybackControls.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -167,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				DA34A4302F60621800C06416 /* Assets.xcassets */,
+				DA87DD2C2F6463EB000C8561 /* OvniAi.mlmodel */,
 				DA34A4322F60621800C06416 /* OvniVisionApp.swift */,
 				DA34A42F2F60621800C06416 /* AppNavigation.swift */,
 				DA34A4312F60621800C06416 /* ContentView.swift */,
@@ -228,6 +247,7 @@
 				DAB5923A2F6313B200C10796 /* RecordingState.swift */,
 				DAB5924B2F6354CF00C10796 /* VideoRecord.swift */,
 				DAB5925D2F6384A600C10796 /* AppVideo.swift */,
+				DA33FE6D2F69A96500DEA94B /* VideoFilter.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -237,10 +257,11 @@
 			children = (
 				DAE0B5942F61A03000D5E24B /* CameraRepository.swift */,
 				DAB592592F637F3A00C10796 /* VideosRepository.swift */,
-				DAB5925B2F63822600C10796 /* MockVideosRepository.swift */,
 				DAB592492F6354B100C10796 /* LocalStorageRepository.swift */,
 				DA165EC12F62F7B200EA249A /* MockCameraRepository.swift */,
 				DAB592612F63A2EF00C10796 /* PlaybackRepository.swift */,
+				DA9D16992F68667D0017FBE7 /* CompassRepository.swift */,
+				DA33FE692F68DC3900DEA94B /* TrackObjectRepository.swift */,
 			);
 			path = Repositorys;
 			sourceTree = "<group>";
@@ -339,12 +360,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA34A4342F60621800C06416 /* HomeScreen.swift in Sources */,
+				DA3E740C2F68565B00F36337 /* CameraCompassView.swift in Sources */,
 				DAB5925E2F6384A600C10796 /* AppVideo.swift in Sources */,
+				DA33FE6E2F69A96500DEA94B /* VideoFilter.swift in Sources */,
 				DADD06F12F622728005ED2CB /* CameraLens.swift in Sources */,
 				DAE0B5972F61B29700D5E24B /* CameraPermissionView.swift in Sources */,
 				DA34A4352F60621800C06416 /* AppNavigation.swift in Sources */,
 				DAE0B5952F61A03000D5E24B /* CameraRepository.swift in Sources */,
+				DA33FE6A2F68DC3900DEA94B /* TrackObjectRepository.swift in Sources */,
 				DADD06EC2F61DC5F005ED2CB /* CameraControlUnderlay.swift in Sources */,
+				DA87DD2D2F6463EB000C8561 /* OvniAi.mlmodel in Sources */,
 				DA87DD292F645312000C8561 /* EntityInfo-OvniVision.generated.swift in Sources */,
 				DAE0B5992F61B6C400D5E24B /* CameraControls.swift in Sources */,
 				DA34A4362F60621800C06416 /* ContentView.swift in Sources */,
@@ -355,14 +380,17 @@
 				DAB592452F63378600C10796 /* CameraSavingPill.swift in Sources */,
 				DAB5923B2F6313B200C10796 /* RecordingState.swift in Sources */,
 				DA165EC22F62F7B200EA249A /* MockCameraRepository.swift in Sources */,
+				DA9D169C2F68AA730017FBE7 /* PlaybackViewFinder.swift in Sources */,
 				DAB592602F6399AD00C10796 /* PlaybackScreen.swift in Sources */,
 				DA34A4372F60621800C06416 /* OvniVisionApp.swift in Sources */,
 				DA1EA9DA2F607D48007CC456 /* AppLogo.swift in Sources */,
-				DAB5925C2F63822600C10796 /* MockVideosRepository.swift in Sources */,
 				DAB5925A2F637F3A00C10796 /* VideosRepository.swift in Sources */,
 				DAB5923F2F632BB400C10796 /* CameraRecordingBadge.swift in Sources */,
+				DA33FE6C2F698BFF00DEA94B /* PlaybackControls.swift in Sources */,
 				DAB5924C2F6354CF00C10796 /* VideoRecord.swift in Sources */,
 				DADD06EE2F61E091005ED2CB /* CameraLensesView.swift in Sources */,
+				DA87DD3D2F64C739000C8561 /* CameraViewFinder.swift in Sources */,
+				DA9D169A2F68667D0017FBE7 /* CompassRepository.swift in Sources */,
 				DAB592622F63A2EF00C10796 /* PlaybackRepository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
