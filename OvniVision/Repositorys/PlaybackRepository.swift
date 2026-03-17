@@ -21,6 +21,9 @@ protocol PlayerApi {
     var filteredImage: CGImage? { get }
     var activeFilter: VideoFilter? { get }
 
+    // Tracking
+    var trackApi: TrackObjectRepository? { get set }
+
     func load(_ video: AppVideo)
     func pause()
     func stop()
@@ -46,6 +49,9 @@ final class PlayerRepository: PlayerApi {
     var filteredImage: CGImage? = nil
     var activeFilter: VideoFilter? = nil
 
+    // Tracking
+    var trackApi: TrackObjectRepository? = nil
+
     private var timeObserver: Any?
     private var videoOutput: AVPlayerItemVideoOutput?
     private var displayTimer: Timer?
@@ -69,6 +75,8 @@ final class PlayerRepository: PlayerApi {
                 self?.duration = d
             }
         }
+        // Always keep the display timer running; processCurrentFrame guards itself
+        startDisplayTimer()
         isLoading = false
     }
 
@@ -82,9 +90,7 @@ final class PlayerRepository: PlayerApi {
         }
         if activeFilter == nil {
             filteredImage = nil
-            stopDisplayTimer()
         } else {
-            startDisplayTimer()
             // Render immediately so the filter is visible even when paused
             processingQueue.async { [weak self] in self?.processCurrentFrame() }
         }
@@ -103,9 +109,25 @@ final class PlayerRepository: PlayerApi {
     }
 
     private func processCurrentFrame() {
-        guard let output = videoOutput, let filter = activeFilter else { return }
+        guard let output = videoOutput else { return }
+        guard activeFilter != nil
+                || trackApi?.isTracking == true
+                || trackApi?.isReadyToBegin == true else { return }
+
         let time = player.currentTime()
         guard let pixelBuffer = output.copyPixelBuffer(forItemTime: time, itemTimeForDisplay: nil) else { return }
+
+        // Tracking
+        if let trackApi {
+            if trackApi.isReadyToBegin {
+                trackApi.beginTracking(pixelBuffer: pixelBuffer)
+            } else if trackApi.isTracking {
+                trackApi.process(pixelBuffer: pixelBuffer)
+            }
+        }
+
+        // Filter
+        guard let filter = activeFilter else { return }
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
         guard let filtered = filter.apply(to: ciImage),
               let cgImage = ciContext.createCGImage(filtered, from: filtered.extent) else { return }
@@ -116,7 +138,6 @@ final class PlayerRepository: PlayerApi {
         let target = CMTimeMakeWithSeconds(seconds, preferredTimescale: 600)
         player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero)
     }
-
 
     func play() {
         player.play()
@@ -146,5 +167,6 @@ final class PlayerRepository: PlayerApi {
         stopDisplayTimer()
         activeFilter = nil
         filteredImage = nil
+        trackApi?.stopTracking()
     }
 }

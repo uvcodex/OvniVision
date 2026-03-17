@@ -8,38 +8,37 @@
 import SwiftUI
 
 struct CameraScreen: View {
+    @GestureState private var isPinching = false
     @Binding var isPresented: Bool
     @State private var baseZoom: CGFloat = 1.0
-    @GestureState private var isPinching = false
-    
     @State var cameraApi = CameraRepository.shared
     @State var compassApi = CompassRepository()
     
-    
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color.black.ignoresSafeArea()
+            VStack {
                 if cameraApi.isAuthorized {
-                    CameraPreview(session: cameraApi.session)
-                        .ignoresSafeArea()
-                        .gesture(
-                            MagnificationGesture()
-                                .updating($isPinching) { _, state, _ in
-                                    state = true
-                                }
-                                .onChanged { value in
-                                    cameraApi.setZoom(baseZoom * value)
-                                }
-                                .onEnded { _ in
-                                    baseZoom = cameraApi.zoomFactor
-                                }
-                        )
-                        .onChange(of: cameraApi.zoomFactor) { _, newValue in
-                            if !isPinching { baseZoom = newValue }
-                        }
-                    CameraControls()
-                    
+                    ZStack {
+                        CameraPreview(session: cameraApi.session)
+                            .ignoresSafeArea()
+                            .gesture(
+                                MagnificationGesture()
+                                    .updating($isPinching) { _, state, _ in
+                                        state = true
+                                    }
+                                    .onChanged { value in
+                                        cameraApi.setZoom(baseZoom * value)
+                                    }
+                                    .onEnded { _ in
+                                        baseZoom = cameraApi.zoomFactor
+                                    }
+                            )
+                            .onChange(of: cameraApi.zoomFactor) { _, newValue in
+                                if !isPinching { baseZoom = newValue }
+                            }
+                        
+                        CameraOverlayView()
+                    }
                 } else {
                     CameraPermissionView(isPresented: $isPresented)
                 }

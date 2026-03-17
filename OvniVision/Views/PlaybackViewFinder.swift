@@ -10,14 +10,16 @@ import SwiftUI
 struct PlaybackViewFinder: View {
     var filteredImage: CGImage? = nil
     var activeFilter: VideoFilter? = nil
+    var trackApi: TrackObjectRepository? = nil
 
     @State private var size: CGFloat = 150
     @State private var dragStartSize: CGFloat = 150
     @State private var viewFinderPosition: CGSize = .zero
     @State private var viewFinderDrag: CGSize = .zero
     @State private var screenSize: CGSize = .zero
+    @State private var peepholeGlobalMid: CGPoint = .zero
 
-    private let minSize: CGFloat = 150
+    private let minSize: CGFloat = 80
     private let maxSize: CGFloat = 350
     private let handleSize: CGFloat = 15
     private let previewZoom: CGFloat = 1.2
@@ -59,6 +61,11 @@ struct PlaybackViewFinder: View {
 
                 VStack {
                     HStack {
+                        if trackApi?.isTracking == true {
+                            Text("TRACKING")
+                                .font(.system(size: 13, weight: .bold, design: .monospaced))
+                                .foregroundStyle(.orange)
+                        }
                         Spacer()
                         if let filterName = activeFilter?.displayName {
                             Text(filterName)
@@ -71,6 +78,25 @@ struct PlaybackViewFinder: View {
                 }
             }
             .frame(width: size, height: size)
+            // Capture the peephole's global mid-point for tracking coordinate math
+            .background {
+                GeometryReader { geo in
+                    let frame = geo.frame(in: .global)
+                    Color.clear
+                        .onAppear {
+                            peepholeGlobalMid = CGPoint(x: frame.midX, y: frame.midY)
+                            updatePeepholeBox()
+                        }
+                        .onChange(of: frame.midX) { _, x in
+                            peepholeGlobalMid = CGPoint(x: x, y: peepholeGlobalMid.y)
+                            updatePeepholeBox()
+                        }
+                        .onChange(of: frame.midY) { _, y in
+                            peepholeGlobalMid = CGPoint(x: peepholeGlobalMid.x, y: y)
+                            updatePeepholeBox()
+                        }
+                }
+            }
         }
         .padding(.top, 70)
         .offset(
@@ -86,12 +112,44 @@ struct PlaybackViewFinder: View {
                     viewFinderDrag = .zero
                 }
         )
+        .onChange(of: size) { updatePeepholeBox() }
+        .onChange(of: trackApi?.trackedBounds) { _, bounds in
+            guard trackApi?.isTracking == true, let bounds else { return }
+            // Derive the viewfinder's natural (zero-offset) position, then shift to track the object.
+            let naturalX = peepholeGlobalMid.x - viewFinderPosition.width
+            let naturalY = peepholeGlobalMid.y - viewFinderPosition.height
+            let targetX = bounds.midX * screenSize.width
+            let targetY = (1 - bounds.midY) * screenSize.height  // flip Vision y
+            viewFinderPosition.width  = targetX - naturalX
+            viewFinderPosition.height = targetY - naturalY
+        }
         .onAppear {
             dragStartSize = size
             guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
             screenSize = scene.screen.bounds.size
         }
     }
+
+    // MARK: - Tracking coordinate helpers
+
+    /// Updates trackApi.peepholeNormalizedBox from current peephole position and size.
+    private func updatePeepholeBox() {
+        guard screenSize.width > 0, screenSize.height > 0, let trackApi else { return }
+        trackApi.peepholeNormalizedBox = computeNormalizedBox(mid: peepholeGlobalMid)
+    }
+
+    /// Converts the peephole center + size to a Vision normalized bounding box.
+    /// Vision uses bottom-left origin; x/y each 0…1.
+    private func computeNormalizedBox(mid: CGPoint) -> CGRect {
+        let W = screenSize.width, H = screenSize.height, z = previewZoom
+        let x = mid.x / W - size / (2 * W * z)
+        let y = 1 - mid.y / H - size / (2 * H * z)   // flip y for Vision bottom-left
+        let w = size / (W * z)
+        let h = size / (H * z)
+        return CGRect(x: x, y: y, width: w, height: h)
+    }
+
+    // MARK: - Corner handles
 
     @ViewBuilder
     private func cornerHandle(_ corner: Corner) -> some View {

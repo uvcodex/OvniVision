@@ -12,21 +12,24 @@ struct PlaybackControls<Content: View>: View {
         videosApi: VideosApi,
         playerApi: PlayerApi,
         video: AppVideo,
+        trackApi: TrackObjectRepository,
         height: CGFloat = 90,
         @ViewBuilder content: () -> Content
     ) {
         self.videosApi = videosApi
         self.playerApi = playerApi
         self.video = video
+        self.trackApi = trackApi
         self.height = height
         self.content = content()
     }
-    
+
     @Environment(\.dismiss) var dismiss
     @State private var showDeleteAlert = false
     var videosApi: VideosApi
     var playerApi: PlayerApi
     let video: AppVideo
+    var trackApi: TrackObjectRepository
     var height: CGFloat
     var content: Content
     
@@ -94,15 +97,17 @@ struct PlaybackControls<Content: View>: View {
                     HStack {
                         Button {
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                
+                                trackApi.isTracking ? trackApi.stopTracking() : trackApi.requestStart()
                             }
                         } label: {
-                            // MARK: Tack Button
+                            // MARK: Track Button
                             Image(systemName: "ellipsis.viewfinder")
                                 .resizable()
                                 .frame(width: 20, height: 20)
-                                .foregroundStyle(.white.opacity(0.8))
-                            
+                                .foregroundStyle(
+                                    trackApi.isTracking || trackApi.isReadyToBegin
+                                        ? .orange : .white.opacity(0.8)
+                                )
                         }
                         .frame(width: 45, height: 45)
                         .glassEffect(.regular, in: Circle())
