@@ -45,7 +45,10 @@ struct CameraOverlayView: View {
             VStack {
                 // MARK: Compas -
                 GeometryReader { geo in
-                    CameraCompassView(width: geo.size.width)
+                    CameraCompassView(
+                        compassApi: cameraApi.compassApi,
+                        width: geo.size.width
+                    )
                 }
                 .frame(height: 70)
                 .padding(.top, 8)

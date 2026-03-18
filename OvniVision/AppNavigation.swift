@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct AppNavigation<Content: View>: View {
-    @State var isCameraPresented: Bool = false
+    @Environment(VideosRepository.self) var videosApi
     @ViewBuilder var content: Content
+    @State var isCameraPresented: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -35,14 +36,17 @@ struct AppNavigation<Content: View>: View {
                 .fullScreenCover(isPresented: $isCameraPresented) {
                     CameraScreen(isPresented: $isCameraPresented)
                 }
+                .onChange(of: isCameraPresented) { _, isPresented in
+                    if !isPresented { videosApi.getVideos() }
+                }
             }
         }
     }
 }
 
 #Preview {
-    @Previewable @State var isCameraPresented = false
-    AppNavigation() {
-        Spacer()
-    }
+//    @Previewable @State var isCameraPresented = false
+//    AppNavigation() {
+//        Spacer()
+//    }
 }

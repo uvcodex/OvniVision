@@ -12,7 +12,6 @@ struct CameraScreen: View {
     @Binding var isPresented: Bool
     @State private var baseZoom: CGFloat = 1.0
     @State var cameraApi = CameraRepository.shared
-    @State var compassApi = CompassRepository()
     
     var body: some View {
         NavigationStack {
@@ -51,7 +50,6 @@ struct CameraScreen: View {
             }
         }
         .environment(cameraApi)
-        .environment(compassApi)
     }
 }
 

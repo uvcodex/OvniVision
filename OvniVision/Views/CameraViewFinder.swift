@@ -9,9 +9,9 @@ import SwiftUI
 
 
 struct CameraViewFinder: View {
-    @Binding var size: CGFloat
-    @Environment(CompassRepository.self) var compassApi
     @Environment(CameraRepository.self) var cameraApi
+    
+    @Binding var size: CGFloat
     @State private var screenSize: CGSize = .zero
     @State private var dragStartSize: CGFloat = 0
     
@@ -20,6 +20,10 @@ struct CameraViewFinder: View {
     private let maxSize: CGFloat = 350
     private let handleSize: CGFloat = 15
     private let previewZoom: CGFloat = 1.2
+    
+    var compassApi : CompassApi {
+        cameraApi.compassApi
+    }
     
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
@@ -45,6 +49,7 @@ struct CameraViewFinder: View {
                     }
                     .clipped()
                 }
+                
                 Image(systemName: "dot.viewfinder")
                     .symbolRenderingMode(.hierarchical)
                     .resizable()
@@ -55,7 +60,6 @@ struct CameraViewFinder: View {
                 ForEach([Corner.topLeft, .topRight, .bottomLeft, .bottomRight], id: \.self) { corner in
                     cornerHandle(corner)
                 }
-                
                 
                 VStack{
                     HStack {

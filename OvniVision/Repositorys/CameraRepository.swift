@@ -26,7 +26,6 @@ protocol CameraApi {
     var isSaving: Bool { get }
     
     // Filter states
-//    var processedImages: [CGImage?] { get }
     var processedImages: CGImage? { get }
     var activeFilter: VideoFilter? { get }
 
@@ -56,9 +55,13 @@ final class CameraRepository: NSObject, CameraApi {
         self.localApi = localApi
         super.init()
     }
-    
     static let shared = CameraRepository()
+    
     private let localApi: LocalApi
+    private let metadataApi = MetadataRepository.shared
+
+    /// Set by CameraScreen so heading can be sampled during recording.
+    var compassApi = CompassRepository()
     
     // MARK: - Session
     let session = AVCaptureSession()
@@ -81,6 +84,7 @@ final class CameraRepository: NSObject, CameraApi {
     
     // MARK: - Recording state
     private var durationTimer: Timer?
+    private var samplingTimer: Timer?
     private var recordingStartTime: Date?
     var recordingSate: RecordingState = .idle
     var recordingDuration: TimeInterval = 0
@@ -337,7 +341,23 @@ final class CameraRepository: NSObject, CameraApi {
             self.recordingDuration = Date().timeIntervalSince(start)
         }
     }
-    
+
+    // MARK: - Compass Sampling Timer (15 fps)
+    private func startSamplingTimer() {
+        samplingTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 15.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            self.metadataApi.sample(
+                heading: self.compassApi.heading,
+                timeOffset: self.recordingDuration
+            )
+        }
+    }
+
+    private func stopSamplingTimer() {
+        samplingTimer?.invalidate()
+        samplingTimer = nil
+    }
+
 }
 
 extension CameraRepository: AVCaptureFileOutputRecordingDelegate {
@@ -345,7 +365,9 @@ extension CameraRepository: AVCaptureFileOutputRecordingDelegate {
     func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, startPTS: CMTime, from connections: [AVCaptureConnection]) {
         Task { @MainActor in
             recordingStartTime = Date()
+            metadataApi.reset()
             startDurationTimer()
+            startSamplingTimer()
         }
     }
     
@@ -358,15 +380,19 @@ extension CameraRepository: AVCaptureFileOutputRecordingDelegate {
                 recordingDuration = 0
                 recordingStartTime = nil
             }
+            stopSamplingTimer()
             try? FileManager.default.removeItem(at: outputFileURL)
             return
         }
-        
+
+        stopSamplingTimer()
+        metadataApi.save(videoFileName: outputFileURL.lastPathComponent)
+
         let duration = recordingDuration
         let fileSize = (try? outputFileURL
             .resourceValues(forKeys: [.fileSizeKey]).fileSize)
             .map { Int64($0) } ?? 0
-        
+
         let record = VideoRecord(
             fileName: outputFileURL.lastPathComponent,
             duration: duration,
@@ -400,6 +426,7 @@ extension CameraRepository: AVCaptureVideoDataOutputSampleBufferDelegate {
         if let filtered = filter.apply(to: ciImage),
            let cgImage = ciContext.createCGImage(filtered, from: filtered.extent) {
             Task { @MainActor in
+                guard self.activeFilter != nil else { return }
                 self.processedImages = cgImage
             }
         }
