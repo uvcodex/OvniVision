@@ -26,6 +26,7 @@ final class MockCameraRepository: NSObject, CameraApi {
     
     // MARK: - State
     var isAuthorized = false
+    var isReady = true
     var zoomFactor: CGFloat = 1.0
     var errorMessage: String?
     var activeLens: CameraLens?

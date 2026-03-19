@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "brand_text_dark_x.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

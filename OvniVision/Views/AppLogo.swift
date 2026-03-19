@@ -11,7 +11,7 @@ struct AppLogo: View {
     var width: CGFloat = 45
     
     var body: some View {
-        Image("AppLogo")
+        Image("AppBrand")
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: width)

@@ -20,7 +20,8 @@ protocol CameraApi {
     var zoomFactor: CGFloat { get }
     var zoomPercentage: Int { get }
     var errorMessage: String? { get }
-    
+    var isReady: Bool { get }
+
     // Recording state
     var recordingSate: RecordingState { get }
     var recordingDuration: TimeInterval { get }
@@ -83,6 +84,7 @@ final class CameraRepository: NSObject, CameraApi {
     
     // MARK: - State
     var isAuthorized = false
+    var isReady = false
     var availableLenses: [CameraLens] = []
     var zoomFactor: CGFloat = 1.0
     var errorMessage: String?
@@ -209,6 +211,7 @@ final class CameraRepository: NSObject, CameraApi {
         
         session.commitConfiguration()
         session.startRunning()
+        Task { @MainActor in self.isReady = true }
     }
     
     // MARK: - Virtual device selection

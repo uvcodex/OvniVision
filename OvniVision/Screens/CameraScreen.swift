@@ -34,11 +34,19 @@ struct CameraScreen: View {
                         if !isPinching { baseZoom = newValue }
                     }
                 CameraOverlayView()
+
+                if !cameraApi.isReady {
+                    ProgressView()
+                        .tint(.white)
+                        .scaleEffect(1.5)
+                }
             }
+            .toolbar(.hidden, for: .navigationBar)
             .onAppear {
                 cameraApi.setupSession()
             }
             .onDisappear {
+                cameraApi.trackApi.stopTracking()
                 cameraApi.stopSession()
             }
         }

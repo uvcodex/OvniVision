@@ -11,50 +11,39 @@ import SwiftUI
 
 struct CameraCompassView: View {
     var compassApi: CompassRepository
-    let width: CGFloat
-//    @State private var compassApi = CompassRepository()
-//    @Environment(CompassRepository.self) var compassApi
     
     private let pxPerDeg: CGFloat = 3.8
-    private let stripH: CGFloat = 55
+    private let stripH: CGFloat = 50
     private var bottomY: CGFloat { stripH - 18 }  // ticks grow UP from here
     
     // Aviation-standard 3-tier tick heights
     private let hMajor: CGFloat = 15   // every 30° — labeled (N, 30, 60, E …)
     private let hMid:   CGFloat = 10   // every 10°
     private let hMinor: CGFloat =  5   // every  5°
-
+    
     // Tick opacities
     private let opMajor: Double = 0.80
     private let opMid:   Double = 0.65
     private let opMinor: Double = 0.50
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            // Heading readout
-//            Text("\(Int(compassApi.heading.rounded()))° \(cardinalLabel(compassApi.heading))")
-//                .font(.system(size: 13, weight: .bold, design: .monospaced))
-//                .foregroundStyle(.orange)
-//                .padding(.leading, 4)
-            
-            // Tape + center marker
-            ZStack {
-                Canvas { ctx, size in
-                    drawTape(ctx: ctx, size: size, heading: compassApi.heading)
-                }
-                .frame(width: width, height: stripH)
-                .clipped()
-                
-                // Triangle indicator — points up, sits just below tallest ticks
+        ZStack {
+            Canvas { ctx, size in
+                drawTape(ctx: ctx, size: size, heading: compassApi.heading)
+            }
+
+            // Triangle indicator — points up, sits just below tallest ticks
+            VStack {
+                Spacer()
                 Image(systemName: "triangle.fill")
                     .resizable()
                     .frame(width: 14, height: 9)
                     .foregroundStyle(.red.opacity(0.8))
-                    .offset(y: 23)   // sits just below baseline, above labels
             }
-            .background(.ultraThinMaterial.opacity(0.75))
         }
-        .frame(width: width)
+        .background(.ultraThinMaterial.opacity(0.75))
+        .frame(height: stripH)
+        .clipped()
     }
     
     // MARK: – Canvas
@@ -92,7 +81,7 @@ struct CameraCompassView: View {
                     ctx.draw(
                         Text(label)
                             .font(.custom("JetBrainsMono-SemiBold", size: 11))
-                            /*.foregroundStyle(Color.white)*/,
+                        /*.foregroundStyle(Color.white)*/,
                         at: CGPoint(x: x, y: bottomY + 12), anchor: .center
                     )
                     // Number above ticks
@@ -170,7 +159,7 @@ struct CameraCompassView: View {
     @Previewable @State  var compassApi = CompassRepository()
     ZStack {
         Color.black.ignoresSafeArea()
-        CameraCompassView(compassApi: compassApi, width: 393)
+        CameraCompassView(compassApi: compassApi)
     }
     .environment(compassApi)
 }

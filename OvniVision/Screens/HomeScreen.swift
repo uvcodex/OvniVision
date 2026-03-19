@@ -17,37 +17,43 @@ struct HomeScreen: View {
     }
     
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 3), spacing: 6) {
-                ForEach(videosApi.videos) { video in
-                    Color.clear
-                        .aspectRatio(1, contentMode: .fit)
-                        .overlay {
-                            if let thumbnail = video.thumbnail {
-                                Image(uiImage: thumbnail)
-                                    .resizable()
-                                    .scaledToFill()
-                            } else {
-                                Color.gray
-                            }
+        Group {
+            if videosApi.videos.isEmpty {
+                NoVideosScreen()
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 3), spacing: 6) {
+                        ForEach(videosApi.videos) { video in
+                            Color.clear
+                                .aspectRatio(1, contentMode: .fit)
+                                .overlay {
+                                    if let thumbnail = video.thumbnail {
+                                        Image(uiImage: thumbnail)
+                                            .resizable()
+                                            .scaledToFill()
+                                    } else {
+                                        Color.gray
+                                    }
+                                }
+                                .overlay(alignment: .bottomLeading) {
+                                    VStack(alignment: .leading, spacing: 1) {
+                                        Text(durationLabel(video.duration))
+                                        Text(video.createdAt.formatted(.dateTime.month(.abbreviated).day().year()))
+                                    }
+                                    .font(.custom("JetBrainsMono-Regular", size: 10))
+                                    .foregroundStyle(.white)
+                                    .padding(5)
+                                    .background(.ultraThinMaterial.opacity(0.5))
+                                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                                    .padding(2)
+                                }
+                                .clipShape(RoundedRectangle(cornerRadius: 3))
+                                .onTapGesture { selectedVideo = video }
                         }
-                        .overlay(alignment: .bottomLeading) {
-                            VStack(alignment: .leading, spacing: 1) {
-                                Text(durationLabel(video.duration))
-                                Text(video.createdAt.formatted(.dateTime.month(.abbreviated).day().year()))
-                            }
-                            .font(.custom("JetBrainsMono-Regular", size: 10))
-                            .foregroundStyle(.white)
-                            .padding(5)
-                            .background(.ultraThinMaterial.opacity(0.5))
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                            .padding(2)
-                        }
-                        .clipShape(RoundedRectangle(cornerRadius: 3))
-                    .onTapGesture { selectedVideo = video }
+                    }
+                    .padding(.horizontal, 6)
                 }
             }
-            .padding(.horizontal, 6)
         }
         .onAppear { videosApi.getVideos() }
         .fullScreenCover(item: $selectedVideo) { video in
@@ -55,10 +61,11 @@ struct HomeScreen: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                AppLogo(width: 90)
+                AppLogo(width: 120)
             }
             .sharedBackgroundVisibility(.hidden)
         }
+        .appBackgroundGradient()
     }
 }
 
