@@ -18,6 +18,7 @@ protocol PlayerApi {
     var duration: Double { get }
 
     // Filter states
+    var viewFinderImage: CGImage? { get }
     var filteredImage: CGImage? { get }
     var activeFilter: VideoFilter? { get }
 
@@ -35,8 +36,9 @@ protocol PlayerApi {
 
 @Observable
 final class PlayerRepository: PlayerApi {
-    init(file: URL) {
+    init(file: URL, duration: Double) {
         self.player = AVPlayer(url: file)
+        self.duration = duration
     }
 
     var player: AVPlayer
@@ -46,6 +48,7 @@ final class PlayerRepository: PlayerApi {
     var isLoading: Bool = false
 
     // Filter states
+    var viewFinderImage: CGImage? = nil
     var filteredImage: CGImage? = nil
     var activeFilter: VideoFilter? = nil
 
@@ -53,6 +56,7 @@ final class PlayerRepository: PlayerApi {
     var trackApi: TrackObjectRepository? = nil
 
     private var timeObserver: Any?
+    private var endObserver: Any?
     private var videoOutput: AVPlayerItemVideoOutput?
     private var displayTimer: Timer?
     private let ciContext = CIContext()
@@ -68,6 +72,15 @@ final class PlayerRepository: PlayerApi {
         videoOutput = output
         player = AVPlayer(playerItem: item)
         if let observer = timeObserver { player.removeTimeObserver(observer) }
+        if let observer = endObserver { NotificationCenter.default.removeObserver(observer) }
+        endObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime,
+            object: item,
+            queue: .main
+        ) { [weak self] _ in
+            self?.player.seek(to: .zero)
+            self?.isPlaying = false
+        }
         let interval = CMTimeMakeWithSeconds(0.1, preferredTimescale: 600)
         timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
             self?.currentTime = time.seconds
@@ -110,10 +123,6 @@ final class PlayerRepository: PlayerApi {
 
     private func processCurrentFrame() {
         guard let output = videoOutput else { return }
-        guard activeFilter != nil
-                || trackApi?.isTracking == true
-                || trackApi?.isReadyToBegin == true else { return }
-
         let time = player.currentTime()
         guard let pixelBuffer = output.copyPixelBuffer(forItemTime: time, itemTimeForDisplay: nil) else { return }
 
@@ -126,12 +135,17 @@ final class PlayerRepository: PlayerApi {
             }
         }
 
-        // Filter
-        guard let filter = activeFilter else { return }
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        guard let filtered = filter.apply(to: ciImage),
-              let cgImage = ciContext.createCGImage(filtered, from: filtered.extent) else { return }
-        Task { @MainActor in self.filteredImage = cgImage }
+        if let filter = activeFilter,
+           let filtered = filter.apply(to: ciImage),
+           let cgImage = ciContext.createCGImage(filtered, from: filtered.extent) {
+            Task { @MainActor in
+                self.filteredImage = cgImage
+                self.viewFinderImage = cgImage
+            }
+        } else if let cgImage = ciContext.createCGImage(ciImage, from: ciImage.extent) {
+            Task { @MainActor in self.viewFinderImage = cgImage }
+        }
     }
 
     func seekTo(_ seconds: Double) {
@@ -167,6 +181,7 @@ final class PlayerRepository: PlayerApi {
         stopDisplayTimer()
         activeFilter = nil
         filteredImage = nil
+        viewFinderImage = nil
         trackApi?.stopTracking()
     }
 }

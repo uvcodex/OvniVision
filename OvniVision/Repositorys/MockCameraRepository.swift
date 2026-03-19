@@ -13,7 +13,7 @@ import Vision
 // MARK: - CameraRepository
 
 @Observable
-final class MockCameraRepository: NSObject, CameraApi {
+final class MockCameraRepository: NSObject, CameraApi { 
     
     
     static let shared = MockCameraRepository()
@@ -49,9 +49,18 @@ final class MockCameraRepository: NSObject, CameraApi {
     
     // MARK: - Filters state
 //    var processedImages: [CGImage?] = [nil, nil, nil]
+    var viewFinderImage: CGImage? = nil
     var processedImages: CGImage? = nil
     var activeFilter: VideoFilter? = nil
     var viewFinderSize: CGFloat = 150
+    var viewFinderCenter: CGPoint = .zero
+    var trackApi = TrackObjectRepository()
+    var zoomPercentage: Int {
+        let minZ = availableLenses.first?.zoomFactor ?? 1
+        let maxZ = availableLenses.last?.zoomFactor ?? minZ
+        guard maxZ > minZ else { return 100 }
+        return max(0, min(100, Int(((zoomFactor - minZ) / (maxZ - minZ)) * 100)))
+    }
 
     // MARK: - Detection stubs
     var isTracking: Bool = false
@@ -73,8 +82,8 @@ final class MockCameraRepository: NSObject, CameraApi {
         self.activeLens = availableLenses.first
     }
     
-    func requestPermissions() async {
-        
+    func setupSession() {
+        isAuthorized = true
     }
     
     // MARK: - Lens switching

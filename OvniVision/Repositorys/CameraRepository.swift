@@ -9,6 +9,7 @@ import Foundation
 import AVFoundation
 import ObjectBox // Used for persisting VideoRecord to the local store
 import CoreImage
+import CoreLocation
 import Vision
 
 protocol CameraApi {
@@ -17,6 +18,7 @@ protocol CameraApi {
     var availableLenses: [CameraLens] { get }
     var activeLens: CameraLens? { get }
     var zoomFactor: CGFloat { get }
+    var zoomPercentage: Int { get }
     var errorMessage: String? { get }
     
     // Recording state
@@ -26,14 +28,16 @@ protocol CameraApi {
     var isSaving: Bool { get }
     
     // Filter states
-//    var processedImages: [CGImage?] { get }
+    var viewFinderImage: CGImage? { get }
     var processedImages: CGImage? { get }
     var activeFilter: VideoFilter? { get }
-
+    
     // Detection
+    var trackApi: TrackObjectRepository { get }
+    var viewFinderCenter: CGPoint { get set }
     var viewFinderSize: CGFloat { get set }
     
-    func requestPermissions() async
+    func setupSession()
     func switchLens(to: CameraLens)
     func setZoom(_ factor: CGFloat)
     func stopSession()
@@ -42,10 +46,10 @@ protocol CameraApi {
     func startRecording()
     func stopRecording()
     func resetRecording()
-
+    
     // Filters
     func cycleFilter()
-
+    
 }
 
 // MARK: - CameraRepository
@@ -56,9 +60,14 @@ final class CameraRepository: NSObject, CameraApi {
         self.localApi = localApi
         super.init()
     }
-    
     static let shared = CameraRepository()
+    
     private let localApi: LocalApi
+    private let metadataApi = MetadataRepository.shared
+    
+    /// Set by CameraScreen so heading can be sampled during recording.
+    var compassApi = CompassRepository()
+    var trackApi = TrackObjectRepository()
     
     // MARK: - Session
     let session = AVCaptureSession()
@@ -81,10 +90,12 @@ final class CameraRepository: NSObject, CameraApi {
     
     // MARK: - Recording state
     private var durationTimer: Timer?
+    private var samplingTimer: Timer?
     private var recordingStartTime: Date?
     var recordingSate: RecordingState = .idle
     var recordingDuration: TimeInterval = 0
     var viewFinderSize: CGFloat = 150.0
+    var viewFinderCenter: CGPoint = .zero
     var isRecording: Bool {
         recordingSate == .recording
     }
@@ -92,10 +103,19 @@ final class CameraRepository: NSObject, CameraApi {
         recordingSate == .saving
     }
     
+    // MARK: - Zoom percentage (0–100 across available lens range)
+    var zoomPercentage: Int {
+        let minZ = availableLenses.first?.zoomFactor ?? 1
+        let maxZ = availableLenses.last?.zoomFactor ?? minZ
+        guard maxZ > minZ else { return 100 }
+        return max(0, min(100, Int(((zoomFactor - minZ) / (maxZ - minZ)) * 100)))
+    }
+    
     // MARK: - Image filter state
+    var viewFinderImage: CGImage? = nil
     var processedImages: CGImage? = nil
     var activeFilter: VideoFilter? = nil
-
+    
     // MARK: - Filter cycling
     func cycleFilter() {
         let filters: [VideoFilter] = [.noir, .colorInvert, .thermal]
@@ -111,39 +131,14 @@ final class CameraRepository: NSObject, CameraApi {
     }
     
     
-    // MARK: - Authorization
-    func requestPermissions() {
-        let videoStatus = AVCaptureDevice.authorizationStatus(for: .video)
-        let audioPermission = AVAudioApplication.shared.recordPermission
-        
-        var videoGranted = videoStatus == .authorized
-        var audioGranted = audioPermission == .granted
-        
-        Task {
-            if videoStatus == .notDetermined {
-                videoGranted = await AVCaptureDevice.requestAccess(for: .video)
-            }
-            if audioPermission == .undetermined {
-                audioGranted = await withCheckedContinuation { continuation in
-                    AVAudioApplication.requestRecordPermission { continuation.resume(returning: $0) }
-                }
-            }
-            
-            await MainActor.run {
-                isAuthorized = videoGranted && audioGranted
-                if !videoGranted {
-                    errorMessage = "Camera access is required to record video."
-                } else if !audioGranted {
-                    errorMessage = "Microphone access is required to record video."
-                }
-                
-                if isAuthorized {
-                    sessionQueue.async { [weak self] in
-                        guard let self else { return }
-                        self.configureSession()
-                    }
-                }
-            }
+    // MARK: - Session setup
+    func setupSession() {
+        let videoGranted = AVCaptureDevice.authorizationStatus(for: .video) == .authorized
+        let audioGranted = AVAudioApplication.shared.recordPermission == .granted
+        isAuthorized = videoGranted && audioGranted
+        guard isAuthorized else { return }
+        sessionQueue.async { [weak self] in
+            self?.configureSession()
         }
     }
     
@@ -161,7 +156,7 @@ final class CameraRepository: NSObject, CameraApi {
         }
         
         session.beginConfiguration()
-        session.sessionPreset = .hd1920x1080
+        //        session.sessionPreset = .hd1920x1080
         
         do {
             let videoInput = try AVCaptureDeviceInput(device: device)
@@ -267,9 +262,8 @@ final class CameraRepository: NSObject, CameraApi {
     @MainActor
     func setZoom(_ factor: CGFloat) {
         guard let device = captureDevice else { return }
-        let clamped = max(
-            device.minAvailableVideoZoomFactor, min(factor, device.maxAvailableVideoZoomFactor)
-        )
+        let upperBound = availableLenses.last?.zoomFactor ?? device.maxAvailableVideoZoomFactor
+        let clamped = max(device.minAvailableVideoZoomFactor, min(factor, upperBound))
         
         do {
             try device.lockForConfiguration()
@@ -285,12 +279,11 @@ final class CameraRepository: NSObject, CameraApi {
     
     // MARK: - Cleanup
     func stopSession() {
-//        detectionRepo.stop()
         sessionQueue.async { [weak self] in
             guard let self else { return }
             self.session.stopRunning()
         }
-
+        
         let defaultZoom = availableLenses.first(where: { $0.zoomFactor == 1.0 })
         let zoom = defaultZoom?.zoomFactor ?? availableLenses.first?.zoomFactor ?? 1.0
         
@@ -300,6 +293,7 @@ final class CameraRepository: NSObject, CameraApi {
             viewFinderSize = 150.0
             activeFilter = nil
             processedImages = nil
+            viewFinderImage = nil
         }
     }
     
@@ -338,6 +332,25 @@ final class CameraRepository: NSObject, CameraApi {
         }
     }
     
+    // MARK: - Compass Sampling Timer (15 fps)
+    private func startSamplingTimer() {
+        samplingTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 15.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            let coord = LocationRepository.shared.location
+            self.metadataApi.sample(
+                heading: self.compassApi.heading,
+                timeOffset: self.recordingDuration,
+                latitude: coord?.latitude,
+                longitude: coord?.longitude
+            )
+        }
+    }
+    
+    private func stopSamplingTimer() {
+        samplingTimer?.invalidate()
+        samplingTimer = nil
+    }
+    
 }
 
 extension CameraRepository: AVCaptureFileOutputRecordingDelegate {
@@ -345,7 +358,9 @@ extension CameraRepository: AVCaptureFileOutputRecordingDelegate {
     func fileOutput(_ output: AVCaptureFileOutput, didStartRecordingTo fileURL: URL, startPTS: CMTime, from connections: [AVCaptureConnection]) {
         Task { @MainActor in
             recordingStartTime = Date()
+            metadataApi.reset()
             startDurationTimer()
+            startSamplingTimer()
         }
     }
     
@@ -358,9 +373,13 @@ extension CameraRepository: AVCaptureFileOutputRecordingDelegate {
                 recordingDuration = 0
                 recordingStartTime = nil
             }
+            stopSamplingTimer()
             try? FileManager.default.removeItem(at: outputFileURL)
             return
         }
+        
+        stopSamplingTimer()
+        metadataApi.save(videoFileName: outputFileURL.lastPathComponent)
         
         let duration = recordingDuration
         let fileSize = (try? outputFileURL
@@ -394,13 +413,24 @@ extension CameraRepository: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         
-        guard let filter = activeFilter else { return }
-
+        if trackApi.isReadyToBegin {
+            trackApi.beginTracking(pixelBuffer: pixelBuffer)
+        } else if trackApi.isTracking {
+            trackApi.process(pixelBuffer: pixelBuffer)
+        }
+        
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        if let filtered = filter.apply(to: ciImage),
+        if let filter = activeFilter,
+           let filtered = filter.apply(to: ciImage),
            let cgImage = ciContext.createCGImage(filtered, from: filtered.extent) {
             Task { @MainActor in
+                guard self.activeFilter != nil else { return }
                 self.processedImages = cgImage
+                self.viewFinderImage = cgImage
+            }
+        } else if let cgImage = ciContext.createCGImage(ciImage, from: ciImage.extent) {
+            Task { @MainActor in
+                self.viewFinderImage = cgImage
             }
         }
     }

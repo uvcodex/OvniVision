@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct AppNavigation<Content: View>: View {
-    @State var isCameraPresented: Bool = false
+    @Environment(VideosRepository.self) var videosApi
+    @Environment(LocationRepository.self) var locationApi
     @ViewBuilder var content: Content
-    
+    @State var isCameraPresented: Bool = false
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -19,21 +21,19 @@ struct AppNavigation<Content: View>: View {
             .safeAreaBar(edge: .bottom) {
                 HStack {
                     Spacer()
-                    Button {
+                    PermissionButton {
                         isCameraPresented = true
-                    } label: {
-                        Image(systemName: "dot.viewfinder")
-                            .symbolRenderingMode(.hierarchical)
-                            .resizable()
-                            .frame(width: 25, height: 25)
-                            .frame(width: 60, height: 60)
                     }
-                    .foregroundStyle(.pink)
-                    .glassEffect(.regular.tint(.red.opacity(0.3)).interactive())
                 }
                 .padding(.horizontal, 16)
                 .fullScreenCover(isPresented: $isCameraPresented) {
                     CameraScreen(isPresented: $isCameraPresented)
+                }
+                .onChange(of: isCameraPresented) { _, isPresented in
+                    if !isPresented {
+                        locationApi.stop()
+                        videosApi.getVideos()
+                    }
                 }
             }
         }
@@ -41,8 +41,8 @@ struct AppNavigation<Content: View>: View {
 }
 
 #Preview {
-    @Previewable @State var isCameraPresented = false
-    AppNavigation() {
-        Spacer()
-    }
+//    @Previewable @State var isCameraPresented = false
+//    AppNavigation() {
+//        Spacer()
+//    }
 }

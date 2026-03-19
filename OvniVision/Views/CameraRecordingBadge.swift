@@ -25,7 +25,7 @@ struct CameraRecordingBadge: View {
             
             Text(duration.durationString)
                 .opacity(isRecording ? 1 : 0.3)
-                .font(.custom("JetBrainsMono-Regular", size: 18))
+                .font(.custom("JetBrainsMono-Regular", size: 16))
         }
     }
 }

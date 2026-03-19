@@ -4,49 +4,79 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:5679226728839099904",
-      "lastPropertyId": "5:2924911464545723648",
+      "id": "2:7901256109789101056",
+      "lastPropertyId": "5:7445788275019126784",
       "name": "VideoRecord",
       "properties": [
         {
-          "id": "1:6574678780349142784",
+          "id": "1:4560619986994703872",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:5626316897584678144",
+          "id": "2:2250729217741557504",
           "name": "fileName",
           "type": 9
         },
         {
-          "id": "3:3061387435186910208",
+          "id": "3:1675763787199144960",
           "name": "duration",
           "type": 8
         },
         {
-          "id": "4:9030195314390735872",
+          "id": "4:2171531535568340992",
           "name": "fileSize",
           "type": 6
         },
         {
-          "id": "5:2924911464545723648",
+          "id": "5:7445788275019126784",
           "name": "createdAt",
           "type": 10
         }
       ],
       "relations": []
+    },
+    {
+      "id": "3:5892671307537721856",
+      "lastPropertyId": "3:776291641127707648",
+      "name": "VideoMetadataEntity",
+      "properties": [
+        {
+          "id": "1:970109829040567552",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:132955011840617472",
+          "name": "videoFileName",
+          "type": 9
+        },
+        {
+          "id": "3:776291641127707648",
+          "name": "snapshotsJSON",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:5679226728839099904",
+  "lastEntityId": "3:5892671307537721856",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 4,
-  "retiredEntityUids": [],
+  "retiredEntityUids": [
+    5944241088687163392
+  ],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    3770665070916410112,
+    1641617488969325056,
+    8372943438348135936
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

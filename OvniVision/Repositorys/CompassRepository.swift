@@ -10,14 +10,12 @@ import CoreLocation
 
 // MARK: - Compass data source
 
+protocol CompassApi {
+    var heading: Double { get }
+}
+
 @Observable
-final class CompassRepository: NSObject, CLLocationManagerDelegate {
-    
-    var heading: Double = 0
-    
-    private let locationManager = CLLocationManager()
-    private var smoothed: Double = 0
-    
+final class CompassRepository: NSObject, CompassApi {
     override init() {
         super.init()
         locationManager.delegate = self
@@ -25,14 +23,14 @@ final class CompassRepository: NSObject, CLLocationManagerDelegate {
         locationManager.startUpdatingHeading()
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        guard newHeading.headingAccuracy >= 0 else { return }
-        smoothed = lowPass(current: smoothed, new: newHeading.magneticHeading)
-        heading = smoothed
-    }
+    private let locationManager = CLLocationManager()
+    private var smoothed: Double = 0
+    
+    var heading: Double = 0
+    
     
     /// Low-pass filter with 0/360 wraparound handling.
-    private func lowPass(current: Double, new: Double, alpha: Double = 0.25) -> Double {
+    nonisolated private func lowPass(current: Double, new: Double, alpha: Double = 0.25) -> Double {
         var diff = new - current
         if diff >  180 { diff -= 360 }
         if diff < -180 { diff += 360 }
@@ -40,5 +38,22 @@ final class CompassRepository: NSObject, CLLocationManagerDelegate {
         if result <   0 { result += 360 }
         if result >= 360 { result -= 360 }
         return result
+    }
+}
+
+extension CompassRepository:  CLLocationManagerDelegate {
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        guard newHeading.headingAccuracy >= 0 else { return }
+        let current = smoothed
+        let raw = newHeading.magneticHeading
+        Task.detached {
+            let s = self.lowPass(current: current, new: raw)
+            await MainActor.run {
+                self.smoothed = s
+                self.heading = s
+            }
+        }
+        
     }
 }

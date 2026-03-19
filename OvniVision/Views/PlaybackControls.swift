@@ -23,7 +23,7 @@ struct PlaybackControls<Content: View>: View {
         self.height = height
         self.content = content()
     }
-
+    
     @Environment(\.dismiss) var dismiss
     @State private var showDeleteAlert = false
     var videosApi: VideosApi
@@ -54,21 +54,8 @@ struct PlaybackControls<Content: View>: View {
             playerApi.stop()
         }
         .toolbar {
-            // MARK: Dismiss button -
-            ToolbarItem(placement:.cancellationAction) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                        .resizable()
-                        .frame(width: 13, height: 13)
-                        .foregroundStyle(.red)
-                }
-                .frame(width: 35, height: 35)
-            }
-            
             // MARK: Delete button -
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button {
                     playerApi.pause()
                     showDeleteAlert = true
@@ -76,6 +63,19 @@ struct PlaybackControls<Content: View>: View {
                     Image(systemName: "trash")
                         .resizable()
                         .frame(width: 16, height: 16)
+                        .foregroundStyle(.red)
+                }
+                .frame(width: 35, height: 35)
+            }
+            
+            // MARK: Dismiss button -
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                        .resizable()
+                        .frame(width: 13, height: 13)
                         .foregroundStyle(.red)
                 }
                 .frame(width: 35, height: 35)
@@ -101,12 +101,12 @@ struct PlaybackControls<Content: View>: View {
                             }
                         } label: {
                             // MARK: Track Button
-                            Image(systemName: "ellipsis.viewfinder")
+                            Image(systemName: "dot.viewfinder")
                                 .resizable()
                                 .frame(width: 20, height: 20)
                                 .foregroundStyle(
                                     trackApi.isTracking || trackApi.isReadyToBegin
-                                        ? .orange : .white.opacity(0.8)
+                                    ? .orange : .white.opacity(0.8)
                                 )
                         }
                         .frame(width: 45, height: 45)
@@ -156,7 +156,7 @@ struct PlaybackControls<Content: View>: View {
                             Image(systemName: "camera.filters")
                                 .resizable()
                                 .frame(width: 20, height: 20)
-                                .foregroundStyle(playerApi.activeFilter != nil ? .orange : .white.opacity(0.8))
+                                .foregroundStyle(playerApi.activeFilter != nil ? .indigo : .white.opacity(0.8))
                         }
                         .frame(width: 45, height: 45)
                         .glassEffect(.regular, in: Circle())

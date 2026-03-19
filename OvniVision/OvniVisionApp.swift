@@ -14,6 +14,8 @@ struct OvniVisionApp: App {
             ContentView()
                 .preferredColorScheme(.dark)
                 .environment(VideosRepository.shared)
+                .environment(LocationRepository.shared)
+                .environment(PermissionRepository.shared)
         }
     }
 }
