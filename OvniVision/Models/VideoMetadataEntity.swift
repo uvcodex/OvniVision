@@ -14,7 +14,7 @@ struct MetadataSnapshot: Codable {
     // Compass
     let heading: Double         // magnetic heading in degrees
 
-    // GPS (future)
+    // GPS
     var latitude: Double?
     var longitude: Double?
     var altitude: Double?       // meters

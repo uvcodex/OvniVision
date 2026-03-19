@@ -10,6 +10,11 @@ import SwiftUI
 struct HomeScreen: View {
     @Environment(VideosRepository.self) var videosApi
     @State private var selectedVideo: AppVideo?
+
+    private func durationLabel(_ seconds: Double) -> String {
+        let t = Int(seconds)
+        return String(format: "%d:%02d", t / 60, t % 60)
+    }
     
     var body: some View {
         ScrollView {
@@ -25,6 +30,18 @@ struct HomeScreen: View {
                             } else {
                                 Color.gray
                             }
+                        }
+                        .overlay(alignment: .bottomLeading) {
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(durationLabel(video.duration))
+                                Text(video.createdAt.formatted(.dateTime.month(.abbreviated).day().year()))
+                            }
+                            .font(.custom("JetBrainsMono-Regular", size: 10))
+                            .foregroundStyle(.white)
+                            .padding(5)
+                            .background(.ultraThinMaterial.opacity(0.5))
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .padding(2)
                         }
                         .clipShape(RoundedRectangle(cornerRadius: 3))
                     .onTapGesture { selectedVideo = video }

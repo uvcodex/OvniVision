@@ -12,17 +12,24 @@ import SwiftUI
 @Observable
 final class PlaybackCompassRepository {
     var heading: Double = 0
+    var latitude: Double? = nil
+    var longitude: Double? = nil
     private(set) var hasData: Bool = false
+    private(set) var hasLocation: Bool = false
     private var snapshots: [MetadataSnapshot] = []
 
     func load(videoFileName: String) {
         snapshots = MetadataRepository.shared.load(videoFileName: videoFileName)
         hasData = !snapshots.isEmpty
+        hasLocation = snapshots.contains { $0.latitude != nil && $0.longitude != nil }
     }
 
     func update(currentTime: Double) {
         guard !snapshots.isEmpty else { return }
         heading = interpolatedHeading(at: currentTime)
+        let coord = interpolatedCoordinate(at: currentTime)
+        latitude = coord?.lat
+        longitude = coord?.lon
     }
 
     private func interpolatedHeading(at time: Double) -> Double {
@@ -34,6 +41,26 @@ final class PlaybackCompassRepository {
         let upper = snapshots[upperIdx]
         let t = (time - lower.timeOffset) / (upper.timeOffset - lower.timeOffset)
         return lerpHeading(from: lower.heading, to: upper.heading, t: t)
+    }
+
+    private func interpolatedCoordinate(at time: Double) -> (lat: Double, lon: Double)? {
+        let located = snapshots.filter { $0.latitude != nil && $0.longitude != nil }
+        guard !located.isEmpty else { return nil }
+        guard let upperIdx = located.firstIndex(where: { $0.timeOffset > time }) else {
+            let last = located.last!
+            return (last.latitude!, last.longitude!)
+        }
+        if upperIdx == 0 {
+            let first = located[0]
+            return (first.latitude!, first.longitude!)
+        }
+        let lower = located[upperIdx - 1]
+        let upper = located[upperIdx]
+        let t = (time - lower.timeOffset) / (upper.timeOffset - lower.timeOffset)
+        return (
+            lower.latitude!  + t * (upper.latitude!  - lower.latitude!),
+            lower.longitude! + t * (upper.longitude! - lower.longitude!)
+        )
     }
 
     private func lerpHeading(from a: Double, to b: Double, t: Double) -> Double {

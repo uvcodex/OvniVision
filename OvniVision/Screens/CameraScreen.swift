@@ -15,35 +15,28 @@ struct CameraScreen: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                if cameraApi.isAuthorized {
-                    ZStack {
-                        CameraPreview(session: cameraApi.session)
-                            .ignoresSafeArea()
-                            .gesture(
-                                MagnificationGesture()
-                                    .updating($isPinching) { _, state, _ in
-                                        state = true
-                                    }
-                                    .onChanged { value in
-                                        cameraApi.setZoom(baseZoom * value)
-                                    }
-                                    .onEnded { _ in
-                                        baseZoom = cameraApi.zoomFactor
-                                    }
-                            )
-                            .onChange(of: cameraApi.zoomFactor) { _, newValue in
-                                if !isPinching { baseZoom = newValue }
+            ZStack {
+                CameraPreview(session: cameraApi.session)
+                    .ignoresSafeArea()
+                    .gesture(
+                        MagnificationGesture()
+                            .updating($isPinching) { _, state, _ in
+                                state = true
                             }
-                        
-                        CameraOverlayView()
+                            .onChanged { value in
+                                cameraApi.setZoom(baseZoom * value)
+                            }
+                            .onEnded { _ in
+                                baseZoom = cameraApi.zoomFactor
+                            }
+                    )
+                    .onChange(of: cameraApi.zoomFactor) { _, newValue in
+                        if !isPinching { baseZoom = newValue }
                     }
-                } else {
-                    CameraPermissionView(isPresented: $isPresented)
-                }
+                CameraOverlayView()
             }
-            .task {
-                cameraApi.requestPermissions()
+            .onAppear {
+                cameraApi.setupSession()
             }
             .onDisappear {
                 cameraApi.stopSession()

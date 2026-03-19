@@ -82,8 +82,8 @@ final class MockCameraRepository: NSObject, CameraApi {
         self.activeLens = availableLenses.first
     }
     
-    func requestPermissions() async {
-        
+    func setupSession() {
+        isAuthorized = true
     }
     
     // MARK: - Lens switching

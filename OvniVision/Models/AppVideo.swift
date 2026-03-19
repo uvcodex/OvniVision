@@ -12,6 +12,7 @@ struct AppVideo: Identifiable {
     let id: Int
     let name: String
     let createdAt: Date
+    let duration: Double
     let thumbnail: UIImage?
     let fileURL: URL
 }
@@ -34,6 +35,7 @@ extension AppVideo {
             id: Int(record.id),
             name: record.fileName,
             createdAt: record.createdAt,
+            duration: record.duration,
             thumbnail: thumbnail,
             fileURL: record.fileURL
         )

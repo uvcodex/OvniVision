@@ -33,8 +33,11 @@ final class MetadataRepository {
     }
 
     /// Appends a snapshot into the ring buffer.
-    func sample(heading: Double, timeOffset: Double) {
-        buffer[writeIndex % capacity] = MetadataSnapshot(timeOffset: timeOffset, heading: heading)
+    func sample(heading: Double, timeOffset: Double, latitude: Double? = nil, longitude: Double? = nil) {
+        var snapshot = MetadataSnapshot(timeOffset: timeOffset, heading: heading)
+        snapshot.latitude = latitude
+        snapshot.longitude = longitude
+        buffer[writeIndex % capacity] = snapshot
         writeIndex += 1
         if count < capacity { count += 1 }
     }
