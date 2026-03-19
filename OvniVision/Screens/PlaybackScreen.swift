@@ -48,9 +48,10 @@ struct PlaybackScreen: View {
                             .ignoresSafeArea()
 
                         PlaybackViewFinder(
-                            filteredImage: playerApi.filteredImage,
+                            filteredImage: playerApi.viewFinderImage,
                             activeFilter: playerApi.activeFilter,
-                            trackApi: trackApi
+                            trackApi: trackApi,
+                            compassApi: compassPlayback
                         )
                     }.ignoresSafeArea()
 

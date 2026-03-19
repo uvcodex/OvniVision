@@ -11,6 +11,7 @@ struct PlaybackViewFinder: View {
     var filteredImage: CGImage? = nil
     var activeFilter: VideoFilter? = nil
     var trackApi: TrackObjectRepository? = nil
+    var compassApi: PlaybackCompassRepository? = nil
 
     @State private var size: CGFloat = 150
     @State private var dragStartSize: CGFloat = 150
@@ -20,9 +21,11 @@ struct PlaybackViewFinder: View {
     @State private var peepholeGlobalMid: CGPoint = .zero
 
     private let minSize: CGFloat = 80
-    private let maxSize: CGFloat = 350
+    private var maxSize: CGFloat { screenSize.width * 0.9 }
+    private var initialSize: CGFloat { screenSize.width * 0.45 }
+    private var centerOffset: CGFloat { screenSize.height * 0.10 }
     private let handleSize: CGFloat = 15
-    private let previewZoom: CGFloat = 1.2
+    @State private var previewZoom: CGFloat = 1.2
 
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
@@ -61,20 +64,29 @@ struct PlaybackViewFinder: View {
 
                 VStack {
                     HStack {
-                        if trackApi?.isTracking == true {
-                            Text("TRACKING")
+                        if let api = compassApi, api.hasData {
+                            Text("\(Int(api.heading.rounded()))° \(cardinalLabel(api.heading))")
                                 .font(.system(size: 13, weight: .bold, design: .monospaced))
                                 .foregroundStyle(.orange)
                         }
                         Spacer()
-                        if let filterName = activeFilter?.displayName {
-                            Text(filterName)
+                        if trackApi?.isTracking == true {
+                            Text("TRACKING")
                                 .font(.system(size: 13, weight: .bold, design: .monospaced))
                                 .foregroundStyle(.orange)
                         }
                     }
                     .padding(6)
                     Spacer()
+                    HStack {
+                        if let filterName = activeFilter?.displayName {
+                            Text(filterName)
+                                .font(.system(size: 13, weight: .bold, design: .monospaced))
+                                .foregroundStyle(.orange)
+                        }
+                        Spacer()
+                    }
+                    .padding(6)
                 }
             }
             .frame(width: size, height: size)
@@ -97,11 +109,15 @@ struct PlaybackViewFinder: View {
                         }
                 }
             }
+
+            Slider(value: $previewZoom, in: 1...10, step: 0.1)
+                .tint(.orange)
+                .frame(width: size)
+                .opacity(0.5)
         }
-        .padding(.top, 70)
         .offset(
             x: viewFinderPosition.width + viewFinderDrag.width,
-            y: viewFinderPosition.height + viewFinderDrag.height
+            y: viewFinderPosition.height + viewFinderDrag.height - centerOffset
         )
         .gesture(
             DragGesture()
@@ -124,9 +140,10 @@ struct PlaybackViewFinder: View {
             viewFinderPosition.height = targetY - naturalY
         }
         .onAppear {
-            dragStartSize = size
             guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
             screenSize = scene.screen.bounds.size
+            size = initialSize
+            dragStartSize = size
         }
     }
 
@@ -169,6 +186,11 @@ struct PlaybackViewFinder: View {
                         dragStartSize = size
                     }
             )
+    }
+
+    private func cardinalLabel(_ heading: Double) -> String {
+        let dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+        return dirs[Int((heading + 22.5) / 45) % 8]
     }
 
     private func cornerOffset(for corner: Corner) -> CGSize {

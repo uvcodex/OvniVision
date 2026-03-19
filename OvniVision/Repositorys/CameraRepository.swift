@@ -17,6 +17,7 @@ protocol CameraApi {
     var availableLenses: [CameraLens] { get }
     var activeLens: CameraLens? { get }
     var zoomFactor: CGFloat { get }
+    var zoomPercentage: Int { get }
     var errorMessage: String? { get }
     
     // Recording state
@@ -26,10 +27,13 @@ protocol CameraApi {
     var isSaving: Bool { get }
     
     // Filter states
+    var viewFinderImage: CGImage? { get }
     var processedImages: CGImage? { get }
     var activeFilter: VideoFilter? { get }
 
     // Detection
+    var trackApi: TrackObjectRepository { get }
+    var viewFinderCenter: CGPoint { get set }
     var viewFinderSize: CGFloat { get set }
     
     func requestPermissions() async
@@ -62,6 +66,7 @@ final class CameraRepository: NSObject, CameraApi {
 
     /// Set by CameraScreen so heading can be sampled during recording.
     var compassApi = CompassRepository()
+    var trackApi = TrackObjectRepository()
     
     // MARK: - Session
     let session = AVCaptureSession()
@@ -89,6 +94,7 @@ final class CameraRepository: NSObject, CameraApi {
     var recordingSate: RecordingState = .idle
     var recordingDuration: TimeInterval = 0
     var viewFinderSize: CGFloat = 150.0
+    var viewFinderCenter: CGPoint = .zero
     var isRecording: Bool {
         recordingSate == .recording
     }
@@ -96,7 +102,16 @@ final class CameraRepository: NSObject, CameraApi {
         recordingSate == .saving
     }
     
+    // MARK: - Zoom percentage (0–100 across available lens range)
+    var zoomPercentage: Int {
+        let minZ = availableLenses.first?.zoomFactor ?? 1
+        let maxZ = availableLenses.last?.zoomFactor ?? minZ
+        guard maxZ > minZ else { return 100 }
+        return max(0, min(100, Int(((zoomFactor - minZ) / (maxZ - minZ)) * 100)))
+    }
+
     // MARK: - Image filter state
+    var viewFinderImage: CGImage? = nil
     var processedImages: CGImage? = nil
     var activeFilter: VideoFilter? = nil
 
@@ -271,9 +286,8 @@ final class CameraRepository: NSObject, CameraApi {
     @MainActor
     func setZoom(_ factor: CGFloat) {
         guard let device = captureDevice else { return }
-        let clamped = max(
-            device.minAvailableVideoZoomFactor, min(factor, device.maxAvailableVideoZoomFactor)
-        )
+        let upperBound = availableLenses.last?.zoomFactor ?? device.maxAvailableVideoZoomFactor
+        let clamped = max(device.minAvailableVideoZoomFactor, min(factor, upperBound))
         
         do {
             try device.lockForConfiguration()
@@ -304,6 +318,7 @@ final class CameraRepository: NSObject, CameraApi {
             viewFinderSize = 150.0
             activeFilter = nil
             processedImages = nil
+            viewFinderImage = nil
         }
     }
     
@@ -419,15 +434,25 @@ extension CameraRepository: AVCaptureFileOutputRecordingDelegate {
 extension CameraRepository: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        
-        guard let filter = activeFilter else { return }
+
+        if trackApi.isReadyToBegin {
+            trackApi.beginTracking(pixelBuffer: pixelBuffer)
+        } else if trackApi.isTracking {
+            trackApi.process(pixelBuffer: pixelBuffer)
+        }
 
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        if let filtered = filter.apply(to: ciImage),
+        if let filter = activeFilter,
+           let filtered = filter.apply(to: ciImage),
            let cgImage = ciContext.createCGImage(filtered, from: filtered.extent) {
             Task { @MainActor in
                 guard self.activeFilter != nil else { return }
                 self.processedImages = cgImage
+                self.viewFinderImage = cgImage
+            }
+        } else if let cgImage = ciContext.createCGImage(ciImage, from: ciImage.extent) {
+            Task { @MainActor in
+                self.viewFinderImage = cgImage
             }
         }
     }

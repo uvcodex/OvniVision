@@ -54,6 +54,8 @@
 		DAB592602F6399AD00C10796 /* PlaybackScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB5925F2F6399AD00C10796 /* PlaybackScreen.swift */; };
 		DAB592622F63A2EF00C10796 /* PlaybackRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB592612F63A2EF00C10796 /* PlaybackRepository.swift */; };
 		DAD02DF72F6B59FB004A8DBF /* EntityInfo-OvniVision.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD02DF52F6B59FB004A8DBF /* EntityInfo-OvniVision.generated.swift */; };
+		DAD02DF92F6BA52A004A8DBF /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD02DF82F6BA52A004A8DBF /* CameraButton.swift */; };
+		DAD02DFB2F6C2EC8004A8DBF /* MapThumbNail.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD02DFA2F6C2EC8004A8DBF /* MapThumbNail.swift */; };
 		DADD06EC2F61DC5F005ED2CB /* CameraControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADD06EB2F61DC5F005ED2CB /* CameraControls.swift */; };
 		DADD06EE2F61E091005ED2CB /* CameraLensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADD06ED2F61E091005ED2CB /* CameraLensesView.swift */; };
 		DADD06F12F622728005ED2CB /* CameraLens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADD06F02F622728005ED2CB /* CameraLens.swift */; };
@@ -111,6 +113,8 @@
 		DAB5925F2F6399AD00C10796 /* PlaybackScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackScreen.swift; sourceTree = "<group>"; };
 		DAB592612F63A2EF00C10796 /* PlaybackRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackRepository.swift; sourceTree = "<group>"; };
 		DAD02DF52F6B59FB004A8DBF /* EntityInfo-OvniVision.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EntityInfo-OvniVision.generated.swift"; sourceTree = "<group>"; };
+		DAD02DF82F6BA52A004A8DBF /* CameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
+		DAD02DFA2F6C2EC8004A8DBF /* MapThumbNail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapThumbNail.swift; sourceTree = "<group>"; };
 		DAD54B542F5F2ACA00E5B495 /* OvniVision.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OvniVision.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DADD06EB2F61DC5F005ED2CB /* CameraControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControls.swift; sourceTree = "<group>"; };
 		DADD06ED2F61E091005ED2CB /* CameraLensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraLensesView.swift; sourceTree = "<group>"; };
@@ -167,8 +171,10 @@
 				DAE0B5982F61B6C400D5E24B /* CameraOverlayView.swift */,
 				DA87DD3C2F64C739000C8561 /* CameraViewFinder.swift */,
 				DAB5923E2F632BB400C10796 /* CameraRecordingBadge.swift */,
+				DAD02DFA2F6C2EC8004A8DBF /* MapThumbNail.swift */,
 				DADD06ED2F61E091005ED2CB /* CameraLensesView.swift */,
 				DADD06EB2F61DC5F005ED2CB /* CameraControls.swift */,
+				DAD02DF82F6BA52A004A8DBF /* CameraButton.swift */,
 				DAB592442F63378600C10796 /* CameraSavingPill.swift */,
 				DA3E740B2F68565B00F36337 /* CameraCompassView.swift */,
 				DA9D169B2F68AA730017FBE7 /* PlaybackViewFinder.swift */,
@@ -375,6 +381,7 @@
 				DA33FE6E2F69A96500DEA94B /* VideoFilter.swift in Sources */,
 				DADD06F12F622728005ED2CB /* CameraLens.swift in Sources */,
 				DAE0B5972F61B29700D5E24B /* CameraPermissionView.swift in Sources */,
+				DAD02DF92F6BA52A004A8DBF /* CameraButton.swift in Sources */,
 				DA34A4352F60621800C06416 /* AppNavigation.swift in Sources */,
 				DAE0B5952F61A03000D5E24B /* CameraRepository.swift in Sources */,
 				DA33FE6A2F68DC3900DEA94B /* TrackObjectRepository.swift in Sources */,
@@ -382,6 +389,7 @@
 				DA87DD2D2F6463EB000C8561 /* OvniAi.mlmodel in Sources */,
 				DAE0B5992F61B6C400D5E24B /* CameraOverlayView.swift in Sources */,
 				DA34A4362F60621800C06416 /* ContentView.swift in Sources */,
+				DAD02DFB2F6C2EC8004A8DBF /* MapThumbNail.swift in Sources */,
 				DAB592422F632C6B00C10796 /* App+Extensions.swift in Sources */,
 				DAE0B5922F619E4300D5E24B /* CameraPreview.swift in Sources */,
 				DAB5924A2F6354B100C10796 /* LocalStorageRepository.swift in Sources */,

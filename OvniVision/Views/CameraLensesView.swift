@@ -25,7 +25,7 @@ struct CameraLensesView: View {
                         .foregroundStyle(isActive ? .yellow : .white)
                         .frame(width: 35, height: 35)
                         .background(Circle().fill(
-                            isActive ? Color.white.opacity(0.2) : .clear
+                            isActive ? Color.white.opacity(0.3) : .clear
                         ))
                 }
             }

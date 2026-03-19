@@ -17,9 +17,12 @@ struct CameraViewFinder: View {
     
     var filteredImage: CGImage? = nil
     private let minSize: CGFloat = 150
-    private let maxSize: CGFloat = 350
-    private let handleSize: CGFloat = 15
-    private let previewZoom: CGFloat = 1.2
+    private var maxSize: CGFloat { screenSize.width * 0.9 }
+    private var initialSize: CGFloat { screenSize.width * 0.45 }
+    private var centerOffset: CGFloat { screenSize.height * 0.10 }
+    private let handleSize: CGFloat = 18
+    @State private var previewZoom: CGFloat = 1
+    @State private var peepholeGlobalMid: CGPoint = .zero
     
     var compassApi : CompassApi {
         cameraApi.compassApi
@@ -36,7 +39,7 @@ struct CameraViewFinder: View {
                 if let cgImage = filteredImage {
                     GeometryReader { geo in
                         let globalFrame = geo.frame(in: .global)
-                        let zoom = previewZoom * cameraApi.zoomFactor
+                        let zoom = previewZoom
                         Image(uiImage: UIImage(cgImage: cgImage, scale: 1, orientation: .right))
                             .resizable()
                             .scaledToFill()
@@ -61,33 +64,64 @@ struct CameraViewFinder: View {
                     cornerHandle(corner)
                 }
                 
-                VStack{
+                VStack {
                     HStack {
                         Text("\(Int(compassApi.heading.rounded()))° \(cardinalLabel(compassApi.heading))")
                             .font(.system(size: 13, weight: .bold, design: .monospaced))
                             .foregroundStyle(.orange)
-                            .padding(.leading, 4)
-                        
                         Spacer()
-                        if let filterName = cameraApi.activeFilter?.displayName {
-                            Text(filterName)
+                        if cameraApi.trackApi.isTracking {
+                            Text("TRACKING")
                                 .font(.system(size: 13, weight: .bold, design: .monospaced))
                                 .foregroundStyle(.orange)
                         }
                     }
                     .padding(6)
                     Spacer()
+                    HStack {
+                        if let filterName = cameraApi.activeFilter?.displayName {
+                            Text(filterName)
+                                .font(.system(size: 13, weight: .bold, design: .monospaced))
+                                .foregroundStyle(.orange)
+                        }
+                        Spacer()
+                    }
+                    .padding(6)
                 }
 
             } // ZStack
             .frame(width: size, height: size)
-            
+            .background {
+                GeometryReader { geo in
+                    let frame = geo.frame(in: .global)
+                    Color.clear
+                        .onAppear {
+                            peepholeGlobalMid = CGPoint(x: frame.midX, y: frame.midY)
+                            updatePeepholeBox()
+                        }
+                        .onChange(of: frame.midX) { _, x in
+                            peepholeGlobalMid = CGPoint(x: x, y: peepholeGlobalMid.y)
+                            updatePeepholeBox()
+                        }
+                        .onChange(of: frame.midY) { _, y in
+                            peepholeGlobalMid = CGPoint(x: peepholeGlobalMid.x, y: y)
+                            updatePeepholeBox()
+                        }
+                }
+            }
+            .onChange(of: size) { updatePeepholeBox() }
+
+            Slider(value: $previewZoom, in: 1...10, step: 0.1)
+                .tint(.orange)
+                .frame(width: size)
+                .opacity(0.5)
         } // VStack
-        .padding(.top, 70)
+        .offset(y: -centerOffset)
         .onAppear {
-            dragStartSize = size
             guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
             screenSize = scene.screen.bounds.size
+            size = initialSize
+            dragStartSize = size
         }
     }
     
@@ -111,6 +145,21 @@ struct CameraViewFinder: View {
             )
     }
     
+    private func updatePeepholeBox() {
+        guard screenSize.width > 0, screenSize.height > 0 else { return }
+        cameraApi.trackApi.peepholeNormalizedBox = computeNormalizedBox(mid: peepholeGlobalMid)
+        cameraApi.viewFinderCenter = peepholeGlobalMid
+    }
+
+    private func computeNormalizedBox(mid: CGPoint) -> CGRect {
+        let W = screenSize.width, H = screenSize.height, z = previewZoom
+        let x = mid.x / W - size / (2 * W * z)
+        let y = 1 - mid.y / H - size / (2 * H * z)
+        let w = size / (W * z)
+        let h = size / (H * z)
+        return CGRect(x: x, y: y, width: w, height: h)
+    }
+
     private func cardinalLabel(_ heading: Double) -> String {
         let dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
         return dirs[Int((heading + 22.5) / 45) % 8]

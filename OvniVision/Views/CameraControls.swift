@@ -14,45 +14,42 @@ struct CameraControls: View {
     var body: some View {
         ZStack {
             HStack {
-                Spacer()
-                
-                // MARK: Dismiss camera -
-                Button {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                        dismiss()
-                    }
-                } label: {
-                    Image(systemName: "xmark")
-                        .symbolRenderingMode(.hierarchical)
-                        .resizable()
-                        .frame(width: 16, height: 16)
-                        .frame(width: 55, height: 55)
+                CameraButton(icon: "xmark", iconSize: 15, color: .red) {
+                    dismiss()
                 }
-                .foregroundStyle(.red)
-                .glassEffect(.regular.tint(.pink.opacity(0.2)).interactive())
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            
+            HStack {
+                Spacer()
+
+                // MARK: Tracking button -
+                CameraButton(icon: "dot.viewfinder", iconSize: 20, color: .orange, effect: true) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                        if cameraApi.trackApi.isTracking || cameraApi.trackApi.isReadyToBegin {
+                            cameraApi.trackApi.stopTracking()
+                        } else {
+                            cameraApi.trackApi.requestStart()
+                        }
+                    }
+                }
                 
-                // MARK: Center spacing -
+                // MARK: Center spacing under record -
                 Rectangle()
                     .frame(width: 70, height: 70)
                     .foregroundStyle(.clear)
                 
                 // MARK: Cycle filters button -
-                Button {
+                CameraButton(icon: "camera.filters", color: .indigo) {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                         cameraApi.cycleFilter()
                     }
-                } label: {
-                    Image(systemName: "camera.filters")
-                        .symbolRenderingMode(.hierarchical)
-                        .resizable()
-                        .frame(width: 25, height: 25)
-                        .frame(width: 55, height: 55)
                 }
-                .foregroundStyle(.blue)
-                .glassEffect(.regular.tint(.indigo.opacity(0.2)).interactive())
                 
                 Spacer()
             }
+            .padding(.horizontal, 16)
             
             // MARK: Record button -
             HStack {
@@ -89,6 +86,7 @@ struct CameraControls: View {
                     .padding(.horizontal, 16)
                 }
             }
+            
         }
     }
 }

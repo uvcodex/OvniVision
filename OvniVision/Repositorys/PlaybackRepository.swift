@@ -18,6 +18,7 @@ protocol PlayerApi {
     var duration: Double { get }
 
     // Filter states
+    var viewFinderImage: CGImage? { get }
     var filteredImage: CGImage? { get }
     var activeFilter: VideoFilter? { get }
 
@@ -46,6 +47,7 @@ final class PlayerRepository: PlayerApi {
     var isLoading: Bool = false
 
     // Filter states
+    var viewFinderImage: CGImage? = nil
     var filteredImage: CGImage? = nil
     var activeFilter: VideoFilter? = nil
 
@@ -110,10 +112,6 @@ final class PlayerRepository: PlayerApi {
 
     private func processCurrentFrame() {
         guard let output = videoOutput else { return }
-        guard activeFilter != nil
-                || trackApi?.isTracking == true
-                || trackApi?.isReadyToBegin == true else { return }
-
         let time = player.currentTime()
         guard let pixelBuffer = output.copyPixelBuffer(forItemTime: time, itemTimeForDisplay: nil) else { return }
 
@@ -126,12 +124,17 @@ final class PlayerRepository: PlayerApi {
             }
         }
 
-        // Filter
-        guard let filter = activeFilter else { return }
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        guard let filtered = filter.apply(to: ciImage),
-              let cgImage = ciContext.createCGImage(filtered, from: filtered.extent) else { return }
-        Task { @MainActor in self.filteredImage = cgImage }
+        if let filter = activeFilter,
+           let filtered = filter.apply(to: ciImage),
+           let cgImage = ciContext.createCGImage(filtered, from: filtered.extent) {
+            Task { @MainActor in
+                self.filteredImage = cgImage
+                self.viewFinderImage = cgImage
+            }
+        } else if let cgImage = ciContext.createCGImage(ciImage, from: ciImage.extent) {
+            Task { @MainActor in self.viewFinderImage = cgImage }
+        }
     }
 
     func seekTo(_ seconds: Double) {
@@ -167,6 +170,7 @@ final class PlayerRepository: PlayerApi {
         stopDisplayTimer()
         activeFilter = nil
         filteredImage = nil
+        viewFinderImage = nil
         trackApi?.stopTracking()
     }
 }
