@@ -12,6 +12,7 @@ struct CameraOverlayView: View {
     @Environment(CameraRepository.self) var cameraApi
     @State private var viewFinderPosition: CGSize = .zero
     @State private var viewFinderDrag: CGSize = .zero
+    @State private var screenSize: CGSize = .zero
     private var lenses: [CameraLens] {
         cameraApi.availableLenses
     }
@@ -22,15 +23,14 @@ struct CameraOverlayView: View {
     var body: some View {
         GeometryReader { screen in
             ZStack {
-                VStack {
-                    CameraViewFinder(
-                        size: Binding(
-                            get: { cameraApi.viewFinderSize },
-                            set: { cameraApi.viewFinderSize = $0 }
-                        ),
-                        filteredImage: cameraApi.viewFinderImage
-                    )
-                }
+                CameraViewFinder(
+                    size: Binding(
+                        get: { cameraApi.viewFinderSize },
+                        set: { cameraApi.viewFinderSize = $0 }
+                    ),
+                    filteredImage: cameraApi.viewFinderImage
+                )
+                
                 .offset(
                     x: viewFinderPosition.width + viewFinderDrag.width,
                     y: viewFinderPosition.height + viewFinderDrag.height
@@ -45,21 +45,16 @@ struct CameraOverlayView: View {
                         }
                 )
                 
-                VStack {
-                    // MARK: Compas -
-                    GeometryReader { geo in
-                        CameraCompassView(
-                            compassApi: cameraApi.compassApi,
-                            width: geo.size.width
-                        )
-                    }
-                    .padding(.top, 6)
+                VStack(spacing: 0) {
+                    // MARK: Compass -
+                    CameraCompassView(compassApi: cameraApi.compassApi)
+
+                    Spacer()
                     HStack {
                         Spacer()
                         MapThumbNail()
                     }
-                    
-                    Spacer()
+    
                     
                     // MARK: Lense picker -
                     ZStack {
@@ -102,24 +97,16 @@ struct CameraOverlayView: View {
                 let mid = cameraApi.viewFinderCenter
                 let naturalX = mid.x - viewFinderPosition.width
                 let naturalY = mid.y - viewFinderPosition.height
-                let targetX = bounds.midX * screen.size.width
-                let targetY = (1 - bounds.midY) * screen.size.height
+                let targetX = bounds.midX * screenSize.width
+                let targetY = (1 - bounds.midY) * screenSize.height
                 viewFinderPosition.width  = targetX - naturalX
                 viewFinderPosition.height = targetY - naturalY
             }
+            .onAppear {
+                guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
+                screenSize = scene.screen.bounds.size
+            }
         }
-//        .toolbar {
-//            ToolbarItem(placement: .cancellationAction) {
-//                Button {
-//                    dismiss()
-//                } label: {
-//                    Image(systemName: "xmark")
-//                        .frame(width: 10, height: 10)
-//                        .frame(width: 30, height: 30)
-//                }
-//                .tint(.red)
-//            }
-//        }
     }
     
 }

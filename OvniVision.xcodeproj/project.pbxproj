@@ -60,6 +60,8 @@
 		DAD02DFF2F6C3613004A8DBF /* MapPlaybackThumbNail.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD02DFE2F6C3613004A8DBF /* MapPlaybackThumbNail.swift */; };
 		DAD02E012F6C3DFC004A8DBF /* PermissionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD02E002F6C3DFC004A8DBF /* PermissionButton.swift */; };
 		DAD02E032F6C4036004A8DBF /* PermissionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD02E022F6C4036004A8DBF /* PermissionRepository.swift */; };
+		DAD02E072F6CA2B9004A8DBF /* NoVideosScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD02E062F6CA2B9004A8DBF /* NoVideosScreen.swift */; };
+		DAD02E092F6CB9C1004A8DBF /* AppBackgroundGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD02E082F6CB9C1004A8DBF /* AppBackgroundGradient.swift */; };
 		DADD06EC2F61DC5F005ED2CB /* CameraControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADD06EB2F61DC5F005ED2CB /* CameraControls.swift */; };
 		DADD06EE2F61E091005ED2CB /* CameraLensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADD06ED2F61E091005ED2CB /* CameraLensesView.swift */; };
 		DADD06F12F622728005ED2CB /* CameraLens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADD06F02F622728005ED2CB /* CameraLens.swift */; };
@@ -123,6 +125,8 @@
 		DAD02DFE2F6C3613004A8DBF /* MapPlaybackThumbNail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPlaybackThumbNail.swift; sourceTree = "<group>"; };
 		DAD02E002F6C3DFC004A8DBF /* PermissionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionButton.swift; sourceTree = "<group>"; };
 		DAD02E022F6C4036004A8DBF /* PermissionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionRepository.swift; sourceTree = "<group>"; };
+		DAD02E062F6CA2B9004A8DBF /* NoVideosScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoVideosScreen.swift; sourceTree = "<group>"; };
+		DAD02E082F6CB9C1004A8DBF /* AppBackgroundGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBackgroundGradient.swift; sourceTree = "<group>"; };
 		DAD54B542F5F2ACA00E5B495 /* OvniVision.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OvniVision.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DADD06EB2F61DC5F005ED2CB /* CameraControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControls.swift; sourceTree = "<group>"; };
 		DADD06ED2F61E091005ED2CB /* CameraLensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraLensesView.swift; sourceTree = "<group>"; };
@@ -200,6 +204,8 @@
 				DA34A42D2F60621800C06416 /* HomeScreen.swift */,
 				DAB5925F2F6399AD00C10796 /* PlaybackScreen.swift */,
 				DA34A4392F60650500C06416 /* CameraScreen.swift */,
+				DAD02E062F6CA2B9004A8DBF /* NoVideosScreen.swift */,
+				DAD02E082F6CB9C1004A8DBF /* AppBackgroundGradient.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -398,6 +404,7 @@
 				DA34A4352F60621800C06416 /* AppNavigation.swift in Sources */,
 				DAE0B5952F61A03000D5E24B /* CameraRepository.swift in Sources */,
 				DAD02E012F6C3DFC004A8DBF /* PermissionButton.swift in Sources */,
+				DAD02E072F6CA2B9004A8DBF /* NoVideosScreen.swift in Sources */,
 				DAD02E032F6C4036004A8DBF /* PermissionRepository.swift in Sources */,
 				DA33FE6A2F68DC3900DEA94B /* TrackObjectRepository.swift in Sources */,
 				DADD06EC2F61DC5F005ED2CB /* CameraControls.swift in Sources */,
@@ -406,6 +413,7 @@
 				DA34A4362F60621800C06416 /* ContentView.swift in Sources */,
 				DAD02DFB2F6C2EC8004A8DBF /* MapThumbNail.swift in Sources */,
 				DAB592422F632C6B00C10796 /* App+Extensions.swift in Sources */,
+				DAD02E092F6CB9C1004A8DBF /* AppBackgroundGradient.swift in Sources */,
 				DAE0B5922F619E4300D5E24B /* CameraPreview.swift in Sources */,
 				DAB5924A2F6354B100C10796 /* LocalStorageRepository.swift in Sources */,
 				DA34A43A2F60650500C06416 /* CameraScreen.swift in Sources */,
@@ -560,6 +568,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -603,6 +612,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
