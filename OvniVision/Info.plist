@@ -9,5 +9,17 @@
 		<string>JetBrainsMono-Regular.ttf</string>
 		<string>JetBrainsMono-Light.ttf</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>SplashScreenColor</string>
+		<key>UIImageName</key>
+		<string>SplashLogo</string>
+		<key>UIToolbar</key>
+		<dict>
+			<key>UIImageName</key>
+			<string>SplashFooter</string>
+		</dict>
+	</dict>
 </dict>
 </plist>
