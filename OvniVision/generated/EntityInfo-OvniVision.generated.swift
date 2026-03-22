@@ -152,8 +152,9 @@ extension VideoRecord: ObjectBox.EntityInspectable {
         try entityBuilder.addProperty(name: "duration", type: PropertyType.double, id: 3, uid: 1675763787199144960)
         try entityBuilder.addProperty(name: "fileSize", type: PropertyType.long, id: 4, uid: 2171531535568340992)
         try entityBuilder.addProperty(name: "createdAt", type: PropertyType.date, id: 5, uid: 7445788275019126784)
+        try entityBuilder.addProperty(name: "classificationRaw", type: PropertyType.string, id: 6, uid: 7898354705394544384)
 
-        try entityBuilder.lastProperty(id: 5, uid: 7445788275019126784)
+        try entityBuilder.lastProperty(id: 6, uid: 7898354705394544384)
     }
 }
 
@@ -188,6 +189,12 @@ extension VideoRecord {
     ///
     ///     box.query { VideoRecord.createdAt > 1234 }
     internal static var createdAt: Property<VideoRecord, Date, Void> { return Property<VideoRecord, Date, Void>(propertyId: 5, isPrimaryKey: false) }
+    /// Generated entity property information.
+    ///
+    /// You may want to use this in queries to specify fetch conditions, for example:
+    ///
+    ///     box.query { VideoRecord.classificationRaw.startsWith("X") }
+    internal static var classificationRaw: Property<VideoRecord, String, Void> { return Property<VideoRecord, String, Void>(propertyId: 6, isPrimaryKey: false) }
 
     fileprivate func __setId(identifier: ObjectBox.Id) {
         self.id = Id(identifier)
@@ -235,6 +242,14 @@ extension ObjectBox.Property where E == VideoRecord {
 
     internal static var createdAt: Property<VideoRecord, Date, Void> { return Property<VideoRecord, Date, Void>(propertyId: 5, isPrimaryKey: false) }
 
+    /// Generated entity property information.
+    ///
+    /// You may want to use this in queries to specify fetch conditions, for example:
+    ///
+    ///     box.query { .classificationRaw.startsWith("X") }
+
+    internal static var classificationRaw: Property<VideoRecord, String, Void> { return Property<VideoRecord, String, Void>(propertyId: 6, isPrimaryKey: false) }
+
 }
 
 
@@ -258,12 +273,14 @@ internal final class VideoRecordBinding: ObjectBox.EntityBinding, Sendable {
     internal func collect(fromEntity entity: EntityType, id: ObjectBox.Id,
                                   propertyCollector: ObjectBox.FlatBufferBuilder, store: ObjectBox.Store) throws {
         let propertyOffset_fileName = propertyCollector.prepare(string: entity.fileName)
+        let propertyOffset_classificationRaw = propertyCollector.prepare(string: entity.classificationRaw)
 
         propertyCollector.collect(id, at: 2 + 2 * 1)
         propertyCollector.collect(entity.duration, at: 2 + 2 * 3)
         propertyCollector.collect(entity.fileSize, at: 2 + 2 * 4)
         propertyCollector.collect(entity.createdAt, at: 2 + 2 * 5)
         propertyCollector.collect(dataOffset: propertyOffset_fileName, at: 2 + 2 * 2)
+        propertyCollector.collect(dataOffset: propertyOffset_classificationRaw, at: 2 + 2 * 6)
     }
 
     internal func createEntity(entityReader: ObjectBox.FlatBufferReader, store: ObjectBox.Store) -> EntityType {
@@ -274,6 +291,7 @@ internal final class VideoRecordBinding: ObjectBox.EntityBinding, Sendable {
         entity.duration = entityReader.read(at: 2 + 2 * 3)
         entity.fileSize = entityReader.read(at: 2 + 2 * 4)
         entity.createdAt = entityReader.read(at: 2 + 2 * 5)
+        entity.classificationRaw = entityReader.read(at: 2 + 2 * 6)
 
         return entity
     }
