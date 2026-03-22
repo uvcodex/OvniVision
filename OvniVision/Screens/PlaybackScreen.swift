@@ -38,8 +38,13 @@ struct PlaybackScreen: View {
     @State var playerApi: PlayerApi
     @State var trackApi = TrackObjectRepository()
     @State var compassPlayback = PlaybackCompassRepository()
+    @State private var showDeleteAlert = false
+    @State private var showClassTypes = false
+    @State private var pendingAction: PlaybackAction? = nil
     let video: AppVideo
-
+    
+    enum PlaybackAction: Equatable { case classTypes, delete }
+    
     private func timeLabel(_ seconds: Double) -> String {
         let s = max(0, seconds)
         let mins = Int(s) / 60
@@ -47,12 +52,12 @@ struct PlaybackScreen: View {
         let tenths = Int(s * 10) % 10
         return String(format: "%02d:%02d.%d", mins, secs, tenths)
     }
-
+    
     private func durationLabel(_ seconds: Double) -> String {
         let s = max(0, seconds)
         return String(format: "%02d:%02d", Int(s) / 60, Int(s) % 60)
     }
-
+    
     var body: some View {
         NavigationStack {
             PlaybackControls(videosApi: videosApi, playerApi: playerApi, video: video, trackApi: trackApi) {
@@ -67,15 +72,12 @@ struct PlaybackScreen: View {
                             trackApi: trackApi,
                             compassApi: compassPlayback
                         )
-                    }.ignoresSafeArea()
+                    }
+                    .ignoresSafeArea()
                     
                     if compassPlayback.hasData {
                         VStack {
-                            GeometryReader { geo in
-                                PlaybackCompassView(width: geo.size.width, compassApi: compassPlayback)
-                            }
-                            .frame(height: 50)
-                            
+                            PlaybackCompassView(compassApi: compassPlayback)
                             Spacer()
                             
                             HStack(alignment: .bottom) {
@@ -89,14 +91,76 @@ struct PlaybackScreen: View {
                                 }
                             }
                             .padding(12)
-                            
                         }
                         .padding(.top, 8)
                     }
                 }
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.down")
+                            .offset(y: -1)
+                            .foregroundStyle(.red)
+                    }
+                    .frame(width: 35, height: 35)
+                }
                 
+                ToolbarItemGroup(placement: .primaryAction) {
+                    
+                    Button {
+                        showDeleteAlert.toggle()
+                    } label: {
+                        Image(systemName: "trash")
+                            .resizable()
+                            .frame(width: 16, height: 16)
+                    }
+                    .tint(.red)
+                    .frame(width: 35, height: 35)
+                }
+                
+                ToolbarSpacer(.flexible, placement: .primaryAction)
+                ToolbarItemGroup(placement: .primaryAction) {
+                    Button {
+                        showClassTypes.toggle()
+                    } label: {
+                        Image(systemName: "list.dash.header.rectangle")
+                            .resizable()
+                            .frame(width: 16, height: 16)
+                    }
+                    .frame(width: 35, height: 35)
+                    
+                }
+            }
+            .onChange(of: pendingAction) { _, action in
+                guard let action else { return }
+                pendingAction = nil
+                switch action {
+                case .classTypes:
+                    showClassTypes = true
+                case .delete:
+                    playerApi.pause()
+                    showDeleteAlert = true
+                }
+            }
+            .alert("Delete Video", isPresented: $showDeleteAlert) {
+                Button("Delete", role: .destructive) {
+                    videosApi.deleteVideo(video)
+                    dismiss()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This action cannot be undone.")
+            }
+            .sheet(isPresented: $showClassTypes) {
+                VideoClassificationSheet(video: video)
+                    .presentationDetents([.medium])
+                    .environment(videosApi)
             }
         }
+        
         .onAppear {
             playerApi.trackApi = trackApi
             compassPlayback.load(videoFileName: video.name)
@@ -105,6 +169,7 @@ struct PlaybackScreen: View {
         .onChange(of: playerApi.currentTime) { _, time in
             compassPlayback.update(currentTime: time)
         }
+        
     }
     
 }
@@ -116,7 +181,8 @@ struct PlaybackScreen: View {
         createdAt: Date(),
         duration: 0,
         thumbnail: nil,
-        fileURL: URL(fileURLWithPath: "")
+        fileURL: URL(fileURLWithPath: ""),
+        classifications: []
     )
     
     PlaybackScreen(video: mockVideo)

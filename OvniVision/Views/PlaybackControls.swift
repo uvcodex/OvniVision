@@ -25,7 +25,6 @@ struct PlaybackControls<Content: View>: View {
     }
     
     @Environment(\.dismiss) var dismiss
-    @State private var showDeleteAlert = false
     var videosApi: VideosApi
     var playerApi: PlayerApi
     let video: AppVideo
@@ -38,48 +37,11 @@ struct PlaybackControls<Content: View>: View {
         VStack {
             content
         }
-        .alert("Delete Video", isPresented: $showDeleteAlert) {
-            Button("Delete", role: .destructive) {
-                videosApi.deleteVideo(video)
-                dismiss()
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This action cannot be undone.")
-        }
         .onAppear {
             playerApi.load(video)
         }
         .onDisappear {
             playerApi.stop()
-        }
-        .toolbar {
-            // MARK: Delete button -
-            ToolbarItem(placement: .cancellationAction) {
-                Button {
-                    playerApi.pause()
-                    showDeleteAlert = true
-                } label: {
-                    Image(systemName: "trash")
-                        .resizable()
-                        .frame(width: 16, height: 16)
-                        .foregroundStyle(.red)
-                }
-                .frame(width: 35, height: 35)
-            }
-            
-            // MARK: Dismiss button -
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                        .resizable()
-                        .frame(width: 13, height: 13)
-                        .foregroundStyle(.red)
-                }
-                .frame(width: 35, height: 35)
-            }
         }
         .safeAreaBar(edge: .bottom) {
             VStack {

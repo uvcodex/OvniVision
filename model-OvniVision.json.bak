@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "2:7901256109789101056",
-      "lastPropertyId": "6:7898354705394544384",
+      "lastPropertyId": "5:7445788275019126784",
       "name": "VideoRecord",
       "properties": [
         {
@@ -33,11 +33,6 @@
           "id": "5:7445788275019126784",
           "name": "createdAt",
           "type": 10
-        },
-        {
-          "id": "6:7898354705394544384",
-          "name": "classificationRaw",
-          "type": 9
         }
       ],
       "relations": []

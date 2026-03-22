@@ -14,6 +14,7 @@ protocol VideosApi {
 
     func getVideos()
     func deleteVideo(_ video: AppVideo)
+    func setClassifications(_ video: AppVideo, classifications: Set<VideoClassification>)
 }
 
 @Observable
@@ -60,5 +61,29 @@ final class VideosRepository: VideosApi {
             }
         }
     }
-    
+
+    func setClassifications(_ video: AppVideo, classifications: Set<VideoClassification>) {
+        Task {
+            do {
+                let box = localApi.store.box(for: VideoRecord.self)
+                if let record = try box.get(Id(video.id)) {
+                    record.classifications = classifications
+                    try box.put(record)
+                    await MainActor.run {
+                        if let index = self.videos.firstIndex(where: { $0.id == video.id }) {
+                            let v = self.videos[index]
+                            self.videos[index] = AppVideo(
+                                id: v.id, name: v.name, createdAt: v.createdAt,
+                                duration: v.duration, thumbnail: v.thumbnail,
+                                fileURL: v.fileURL, classifications: classifications
+                            )
+                        }
+                    }
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+
 }

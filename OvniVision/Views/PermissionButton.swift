@@ -40,7 +40,7 @@ struct PermissionButton: View {
     var body: some View {
         CameraButton(
             icon: isDenied ? "exclamationmark.triangle" : "dot.viewfinder",
-            color: isDenied ? .red : .pink
+            color: isDenied ? .red : .orange
         ) {
             if isDenied || isLocationDenied {
                 showAlert = true

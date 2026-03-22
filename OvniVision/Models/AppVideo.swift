@@ -15,6 +15,7 @@ struct AppVideo: Identifiable {
     let duration: Double
     let thumbnail: UIImage?
     let fileURL: URL
+    let classifications: Set<VideoClassification>
 }
 
 extension AppVideo {
@@ -37,7 +38,8 @@ extension AppVideo {
             createdAt: record.createdAt,
             duration: record.duration,
             thumbnail: thumbnail,
-            fileURL: record.fileURL
+            fileURL: record.fileURL,
+            classifications: record.classifications
         )
     }
 }

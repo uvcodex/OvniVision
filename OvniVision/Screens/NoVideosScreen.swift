@@ -10,12 +10,11 @@ import SwiftUI
 struct NoVideosScreen: View {
     var body: some View {
         VStack(spacing: 16) {
-            Image(systemName: "dot.viewfinder")
+            Image("app_icon")
                 .resizable()
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.pink)
-                .frame(width: 45, height: 45)
-                .opacity(0.5)
+                .frame(width: 35, height: 35)
 
             Text("No recordings yet")
                 .font(.custom("JetBrainsMono-Regular", size: 16))

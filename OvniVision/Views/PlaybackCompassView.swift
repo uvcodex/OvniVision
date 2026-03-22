@@ -17,13 +17,13 @@ final class PlaybackCompassRepository {
     private(set) var hasData: Bool = false
     private(set) var hasLocation: Bool = false
     private var snapshots: [MetadataSnapshot] = []
-
+    
     func load(videoFileName: String) {
         snapshots = MetadataRepository.shared.load(videoFileName: videoFileName)
         hasData = !snapshots.isEmpty
         hasLocation = snapshots.contains { $0.latitude != nil && $0.longitude != nil }
     }
-
+    
     func update(currentTime: Double) {
         guard !snapshots.isEmpty else { return }
         heading = interpolatedHeading(at: currentTime)
@@ -31,7 +31,7 @@ final class PlaybackCompassRepository {
         latitude = coord?.lat
         longitude = coord?.lon
     }
-
+    
     private func interpolatedHeading(at time: Double) -> Double {
         guard let upperIdx = snapshots.firstIndex(where: { $0.timeOffset > time }) else {
             return snapshots.last?.heading ?? 0
@@ -42,7 +42,7 @@ final class PlaybackCompassRepository {
         let t = (time - lower.timeOffset) / (upper.timeOffset - lower.timeOffset)
         return lerpHeading(from: lower.heading, to: upper.heading, t: t)
     }
-
+    
     private func interpolatedCoordinate(at time: Double) -> (lat: Double, lon: Double)? {
         let located = snapshots.filter { $0.latitude != nil && $0.longitude != nil }
         guard !located.isEmpty else { return nil }
@@ -62,7 +62,7 @@ final class PlaybackCompassRepository {
             lower.longitude! + t * (upper.longitude! - lower.longitude!)
         )
     }
-
+    
     private func lerpHeading(from a: Double, to b: Double, t: Double) -> Double {
         var diff = b - a
         if diff >  180 { diff -= 360 }
@@ -77,29 +77,26 @@ final class PlaybackCompassRepository {
 // MARK: - Playback compass strip view
 
 struct PlaybackCompassView: View {
-    let width: CGFloat
+    //    let width: CGFloat
     let compassApi: PlaybackCompassRepository
-
+    
     private let pxPerDeg: CGFloat = 3.8
-    private let stripH: CGFloat = 55
+    private let stripH: CGFloat = 50
     private var bottomY: CGFloat { stripH - 18 }
-
+    
     private let hMajor: CGFloat = 15
     private let hMid:   CGFloat = 10
     private let hMinor: CGFloat =  5
-
+    
     private let opMajor: Double = 0.80
     private let opMid:   Double = 0.65
     private let opMinor: Double = 0.50
-
+    
     var body: some View {
         ZStack {
             Canvas { ctx, size in
                 drawTape(ctx: ctx, size: size, heading: compassApi.heading)
             }
-            .frame(width: width, height: stripH)
-            .clipped()
-
             Image(systemName: "triangle.fill")
                 .resizable()
                 .frame(width: 14, height: 9)
@@ -107,31 +104,31 @@ struct PlaybackCompassView: View {
                 .offset(y: 23)
         }
         .background(.ultraThinMaterial.opacity(0.75))
-        .frame(width: width)
+        .frame(height: stripH)
     }
-
+    
     // MARK: – Canvas
-
+    
     private func drawTape(ctx: GraphicsContext, size: CGSize, heading: Double) {
         let cx = size.width / 2
         let halfVis = Double(size.width / pxPerDeg) / 2.0 + 12.0
         let lo = heading - halfVis
         let hi = heading + halfVis
-
+        
         var bl = Path()
         bl.move(to: CGPoint(x: 0, y: bottomY))
         bl.addLine(to: CGPoint(x: size.width, y: bottomY))
         ctx.stroke(bl, with: .color(.white.opacity(0.20)), lineWidth: 0.5)
-
+        
         let step = 5
         let startStep = Int(floor(lo / Double(step))) * step
         let endStep   = Int(ceil(hi  / Double(step))) * step
-
+        
         for i in stride(from: startStep, through: endStep, by: step) {
             let x = cx + CGFloat(Double(i) - heading) * pxPerDeg
             guard x >= 0, x <= size.width else { continue }
             let n = ((i % 360) + 360) % 360
-
+            
             if n % 30 == 0 {
                 let label      = tapeLabel(for: n)
                 let isCardinal = n % 90 == 0
@@ -172,16 +169,16 @@ struct PlaybackCompassView: View {
             }
         }
     }
-
+    
     private func tick(_ ctx: GraphicsContext, x: CGFloat, h: CGFloat, op: Double, lw: CGFloat) {
         var p = Path()
         p.move(to:    CGPoint(x: x, y: bottomY))
         p.addLine(to: CGPoint(x: x, y: bottomY - h))
         ctx.stroke(p, with: .color(.white.opacity(op)), lineWidth: lw)
     }
-
+    
     // MARK: – Helpers
-
+    
     private func tapeLabel(for deg: Int) -> String {
         switch deg {
         case   0: return "N"
@@ -191,7 +188,7 @@ struct PlaybackCompassView: View {
         default:  return "\(deg)"
         }
     }
-
+    
     private func intercardinalLabel(for deg: Int) -> String {
         switch deg {
         case  45: return "NE"
@@ -213,6 +210,6 @@ struct PlaybackCompassView: View {
             r.update(currentTime: 0)
             return r
         }()
-        PlaybackCompassView(width: 393, compassApi: mock)
+        PlaybackCompassView(compassApi: mock)
     }
 }
